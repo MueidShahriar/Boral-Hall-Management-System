@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <!-- Main CSS -->
-    <link rel="stylesheet" href="StudentDashboard.css">
+    <link rel="stylesheet" href="AdminDashboard.css">
 </head>
 
 <body>
@@ -34,32 +34,32 @@
                     <h3>Dashboard</h3>
                 </a>
                 <a href="#">
-                    <span class="material-icons">person</span>
-                    <h3>Profile</h3>
+                    <span class="material-icons">pending</span>
+                    <h3>Check Request</h3>
                 </a>
                 <a href="#">
-                    <span class="material-icons">payments</span>
-                    <h3>Check Payments</h3>
+                    <span class="material-icons">picture_as_pdf</span>
+                    <h3>Add Documents</h3>
                 </a>
                 <a href="#">
-                    <span class="material-icons">hotel</span>
-                    <h3>Guest Room Booking</h3>
+                    <span class="material-icons">corporate_fare</span>
+                    <h3>Room Allocation</h3>
+                </a>
+                <a href="#">
+                    <span class="material-icons">search</span>
+                    <h3>Searching Student Info</h3>
+                </a>
+                <a href="#">
+                    <span class="material-icons">co_present</span>
+                    <h3>Attendance Report</h3>
                 </a>
                 <a href="#">
                     <span class="material-icons">restaurant_menu</span>
-                    <h3>Meal Management</h3>
-                </a>
-                <a href="#">
-                    <span class="material-icons">touch_app</span>
-                    <h3>Give Attendance</h3>
+                    <h3>Meal Report</h3>
                 </a>
                 <a href="#">
                     <span class="material-icons">report</span>
-                    <h3>Complaints</h3>
-                </a>
-                <a href="#">
-                    <span class="material-icons">info</span>
-                    <h3>About</h3>
+                    <h3>Check Complaints</h3>
                 </a>
                 <a href="#">
                     <span class="material-icons">logout</span>
@@ -70,54 +70,55 @@
         </aside>
 
         <!-- Main Content -->
-        <main>
+        <main class="main-content">
             <h1>Dashboard</h1>
             <div class="dashboard">
 
                 <div class="card payment">
                     <span class="material-icons card-icon">payments</span>
                     <div class="section-info">
-                        <h2>Check Payments</h2>
-                        <p>Check your payment status and history</p>
+                        <h2>Check Request</h2>
+                        <p>Check and approve new student requests</p>
                         <button class="action-btn">View</button>
                     </div>
                 </div>
 
-                <div class="card booking">
+                <div class="card attendance">
+                    <span class="material-icons card-icon">co_present</span>
+                    <div class="section-info">
+                        <h2>Check Attendance Report</h2>
+                        <p>Daily present and absent report</p>
+                        <button class="action-btn">Allocate</button>
+                    </div>
+                </div>
+
+                <div class="card allocation">
                     <span class="material-icons card-icon">hotel</span>
                     <div class="section-info">
-                        <h2>Guest Room Booking</h2>
-                        <p>Book your guest room</p>
-                        <button class="action-btn">Book Now</button>
+                        <h2>Room Allocation</h2>
+                        <p>Roomwise allocation system</p>
+                        <button class="action-btn">Allocate</button>
                     </div>
                 </div>
 
                 <div class="card meal">
                     <span class="material-icons card-icon">restaurant_menu</span>
                     <div class="section-info">
-                        <h2>Meal Management</h2>
-                        <p>Manage your daily meal status</p>
-                        <button class="action-btn">Manage</button>
+                        <h2>Meal Report</h2>
+                        <p>Check meal report and manage meals</p>
+                        <button class="action-btn">Check</button>
                     </div>
                 </div>
 
                 <div class="card complaint">
                     <span class="material-icons card-icon">report</span>
                     <div class="section-info">
-                        <h2>Complaints</h2>
-                        <p>Submit and track your complaints easily</p>
-                        <button class="action-btn">Submit</button>
+                        <h2>Check Complaints</h2>
+                        <p>Check residential student complaints</p>
+                        <button class="action-btn">Check</button>
                     </div>
                 </div>
 
-                <div class="card sos">
-                    <span class="material-icons warning">warning</span>
-                    <div class="sos-info">
-                        <h2>SOS</h2>
-                        <p>Tap to request emergency help instantly</p>
-                        <button class="sos-btn">Send SOS</button>
-                    </div>
-                </div>
             </div>
         </main>
 
@@ -125,11 +126,11 @@
         <div class="right">
             <div class="top">
                 <!-- Mobile Menu Button -->
-                <button id="menu_bar" type="button">
+                <button id="menu_bar" type="button" title="Menu">
                     <span class="material-icons">menu</span>
                 </button>
 
-                <div class="notification">
+                <div class="notification" title="Notifications">
                     <span class="material-icons">notifications</span>
                 </div>
 
@@ -137,7 +138,7 @@
                     <span class="material-icons">logout</span>
                 </button>
 
-                <div class="theme-toggler" data-theme="toggle">
+                <div class="theme-toggler" data-theme="toggle" title="Toggle Theme">
                     <span class="material-icons active">dark_mode</span>
                     <span class="material-icons">light_mode</span>
                 </div>
@@ -150,10 +151,10 @@
             </div>
         </div>
 
-    </div> <!-- .container -->
+    </div> <!-- End .container -->
 
-    <!-- JavaScript: Toggle Sidebar -->
-    <script src="StudentDashboard.js"></script>
+    <!-- JavaScript -->
+    <script src="AdminDashboard.js"></script>
 </body>
 
 </html>

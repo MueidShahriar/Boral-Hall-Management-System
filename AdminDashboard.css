@@ -26,7 +26,7 @@
     --shadow: 0 2rem 3rem var(--clr-light);
 }
 
-/* === Reset === */
+/* === Reset & Base === */
 * {
     margin: 0;
     padding: 0;
@@ -46,19 +46,55 @@ body {
 }
 
 /* === Typography === */
-h1 { font-size: 1.8rem; }
-h2 { font-size: 1rem; }
-h3 { font-size: 0.87rem; }
-h4 { font-size: 0.8rem; }
-h5 { font-size: 0.77rem; }
-p, small { color: var(--clr-dark-variant); }
-b { color: var(--clr-dark); }
-.text-muted { color: var(--clr-info-dark); }
+h1 {
+    font-size: 1.8rem;
+}
 
-.primary { color: var(--clr-primary); }
-.success { color: var(--clr-success); }
-.danger { color: var(--clr-danger); font-size: 2rem; }
-.warning { color: var(--clr-warning); }
+h2 {
+    font-size: 1rem;
+}
+
+h3 {
+    font-size: 0.87rem;
+}
+
+h4 {
+    font-size: 0.8rem;
+}
+
+h5 {
+    font-size: 0.77rem;
+}
+
+p,
+small {
+    color: var(--clr-dark-variant);
+}
+
+b {
+    color: var(--clr-dark);
+}
+
+.text-muted {
+    color: var(--clr-info-dark);
+}
+
+.primary {
+    color: var(--clr-primary);
+}
+
+.success {
+    color: var(--clr-success);
+}
+
+.danger {
+    color: var(--clr-danger);
+    font-size: 2rem;
+}
+
+.warning {
+    color: var(--clr-warning);
+}
 
 .rsm {
     font-size: 0.78rem;
@@ -67,7 +103,7 @@ b { color: var(--clr-dark); }
     color: rgba(31, 31, 164, 0.996);
 }
 
-/* === Container Grid === */
+/* === Layout === */
 .container {
     display: grid;
     grid-template-columns: 14rem auto 14rem;
@@ -80,7 +116,7 @@ b { color: var(--clr-dark); }
 .aside {
     height: 100vh;
     background: var(--clr-white);
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1); /* Added shadow */
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease-in-out;
     position: relative;
     z-index: 10;
@@ -123,13 +159,12 @@ b { color: var(--clr-dark); }
     gap: 0.1rem;
     padding: 0.5rem;
     color: var(--clr-dark);
-    border: 1px solid rgba(0, 0, 0, 0.1); /* subtle border */
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: var(--radius-1);
     margin-bottom: 0.1rem;
     background-color: var(--clr-white);
     transition: background 0.2s, color 0.2s;
 }
-
 
 .sidebar a:hover {
     background-color: rgba(115, 128, 236, 0.1);
@@ -185,11 +220,30 @@ main .dashboard {
     color: var(--clr-primary);
 }
 
-.card.payment { background: #ccb0ee6d; border-left: 5px solid var(--clr-primary); }
-.card.booking { background: #9cf6c959; border-left: 5px solid var(--clr-success); }
-.card.meal { background: #85a2d564; border-left: 5px solid var(--clr-info-dark); }
-.card.complaint { background: #e4ccb56e; border-left: 5px solid var(--clr-warning); }
-.card.sos { background: #fff5f5; border-left: 5px solid var(--clr-warning); }
+.card.payment {
+    background: #ccb0ee6d;
+    border-left: 5px solid var(--clr-primary);
+}
+
+.card.attendance {
+    background: #9cf6c959;
+    border-left: 5px solid var(--clr-success);
+}
+
+.card.meal {
+    background: #d5858564;
+    border-left: 5px solid var(--clr-info-dark);
+}
+
+.card.complaint {
+    background: #e4ccb56e;
+    border-left: 5px solid var(--clr-warning);
+}
+
+.card.allocation {
+    background: #a0c3ef8e;
+    border-left: 5px solid var(--clr-primary-variant);
+}
 
 /* === Buttons === */
 .action-btn,
@@ -283,7 +337,7 @@ main .dashboard {
     object-fit: cover;
 }
 
-/* === Menu Bar (Mobile) === */
+/* === Mobile Menu Button === */
 #menu_bar {
     display: none;
     background: none;
@@ -293,7 +347,7 @@ main .dashboard {
     color: var(--clr-dark);
 }
 
-/* === Responsive === */
+/* === Responsive Design === */
 @media screen and (max-width: 1200px) {
     .container {
         grid-template-columns: 7rem auto 14rem;
