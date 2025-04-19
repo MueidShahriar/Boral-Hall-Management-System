@@ -37,7 +37,7 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: var(--clr-bg);
+    background: var(--clr-white);
     color: var(--clr-dark);
     font-size: 0.88rem;
     overflow-x: hidden;
@@ -47,7 +47,7 @@ body {
 
 /* === Typography === */
 h1 {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
 }
 
 h2 {
@@ -124,9 +124,16 @@ b {
 
 .aside .top {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: var(--padding);
+    justify-content: space-between;
+    font-size: .5rem;
+    padding: 1.5rem;
+    color: var(--clr-dark);
+    border: 2px solid rgba(164, 158, 158, 0.1);
+    border-radius: var(--radius-1);
+    margin-bottom: .1rem;
+    background-color: var(--clr-white);
+    
 }
 
 .aside .logo {
@@ -142,8 +149,13 @@ b {
 
 .aside .top .close span {
     display: none;
-    font-size: 2rem;
+    font-size: 3rem;
     cursor: pointer;
+}
+
+.aside .top .danger {
+    color: var(--clr-dark);
+    font-size: 1.8rem;
 }
 
 .sidebar {
@@ -157,6 +169,7 @@ b {
     display: flex;
     align-items: center;
     gap: 0.1rem;
+    font-size: .5rem;
     padding: 0.5rem;
     color: var(--clr-dark);
     border: 1px solid rgba(0, 0, 0, 0.1);
@@ -200,7 +213,7 @@ main .dashboard {
 }
 
 .card {
-    background: var(--clr-white);
+    background:white;
     padding: var(--card-padding);
     border-radius: var(--card-radius);
     box-shadow: var(--shadow);
@@ -251,8 +264,7 @@ main .dashboard {
 }
 
 /* === Buttons === */
-.action-btn,
-.sos-btn {
+.action-btn{
     margin-top: 0.8rem;
     padding: 0.4rem 1rem;
     border: none;
@@ -271,14 +283,6 @@ main .dashboard {
     background: var(--clr-primary-variant);
 }
 
-.sos-btn {
-    background: rgb(188, 31, 31);
-}
-
-.sos-btn:hover {
-    background: rgb(150, 8, 8);
-}
-
 /* === Right Panel === */
 .right {
     margin-top: 1rem;
@@ -291,7 +295,6 @@ main .dashboard {
     background: var(--clr-white);
     padding: var(--padding);
     height: 3rem;
-    box-shadow: var(--shadow);
     position: relative;
     z-index: 5;
 }
@@ -300,7 +303,7 @@ main .dashboard {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 1.2rem;
+    font-size: .1rem;
     color: var(--clr-dark);
 }
 
@@ -308,8 +311,11 @@ main .dashboard {
     color: var(--clr-danger);
 }
 
-.notification {
-    font-size: 1.2rem;
+.notification-btn {
+    font-size: .01rem;
+    background: none;
+    border: none;
+    cursor: pointer;
 }
 
 .theme-toggler {

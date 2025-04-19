@@ -47,7 +47,7 @@ body {
 
 /* === Typography === */
 h1 {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
 }
 
 h2 {
@@ -125,9 +125,15 @@ b {
 
 .aside .top {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: var(--padding);
+    justify-content: space-between;
+    font-size: .5rem;
+    padding: 1.5rem;
+    color: var(--clr-dark);
+    border: 2px solid rgba(164, 158, 158, 0.1);
+    border-radius: var(--radius-1);
+    margin-bottom: .1rem;
+    background-color: var(--clr-white);
 }
 
 .aside .logo {
@@ -161,13 +167,16 @@ b {
     padding: 0.5rem;
     color: var(--clr-dark);
     border: 1px solid rgba(0, 0, 0, 0.1);
-    /* subtle border */
     border-radius: var(--radius-1);
     margin-bottom: 0.1rem;
     background-color: var(--clr-white);
     transition: background 0.2s, color 0.2s;
 }
 
+.aside .top .danger {
+    color: var(--clr-dark);
+    font-size: 1.8rem;
+}
 
 .sidebar a:hover {
     background-color: rgba(115, 128, 236, 0.1);
@@ -220,7 +229,7 @@ main .dashboard {
 
 .card-icon {
     font-size: 2rem;
-    color: var(--clr-primary);
+    color: var(--clr-dark);
 }
 
 .card.payment {
@@ -286,10 +295,10 @@ main .dashboard {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: var(--clr-white);
+    border: none;
+    background: none;
     padding: var(--padding);
     height: 3rem;
-    box-shadow: var(--shadow);
     position: relative;
     z-index: 5;
 }
@@ -298,7 +307,7 @@ main .dashboard {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 1.2rem;
+    font-size: .1rem;
     color: var(--clr-dark);
 }
 
@@ -306,8 +315,11 @@ main .dashboard {
     color: var(--clr-danger);
 }
 
-.notification {
-    font-size: 1.2rem;
+.notification-btn {
+    font-size: .001rem;
+    background: none;
+    border: none;
+    cursor: pointer;
 }
 
 .theme-toggler {
@@ -315,7 +327,9 @@ main .dashboard {
     background: var(--clr-white);
     width: 4.2rem;
     height: 1.6rem;
-    border-radius: var(--radius-1);
+    cursor: pointer;
+    background: none;
+    border: none;
     cursor: pointer;
 }
 
