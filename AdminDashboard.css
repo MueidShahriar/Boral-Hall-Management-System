@@ -217,12 +217,12 @@ main .dashboard {
 
 .card-icon {
     font-size: 2rem;
-    color: var(--clr-primary);
+    color: var(--clr-dark);
 }
 
-.card.payment {
+.card.request {
     background: #ccb0ee6d;
-    border-left: 5px solid var(--clr-primary);
+    border-left: 5px solid purple;
 }
 
 .card.attendance {
@@ -231,18 +231,23 @@ main .dashboard {
 }
 
 .card.meal {
-    background: #d5858564;
-    border-left: 5px solid var(--clr-info-dark);
+    background: #cad58564;
+    border-left: 5px solid orange;
+}
+
+.card.student_info {
+    background: #c0f0b89d;
+    border-left: 5px solid green;
 }
 
 .card.complaint {
-    background: #e4ccb56e;
+    background: #e4beb56e;
     border-left: 5px solid var(--clr-warning);
 }
 
 .card.allocation {
     background: #a0c3ef8e;
-    border-left: 5px solid var(--clr-primary-variant);
+    border-left: 5px solid blue;
 }
 
 /* === Buttons === */
