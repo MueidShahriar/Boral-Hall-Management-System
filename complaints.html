@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>BHMS</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/animate.min.css">
+    <link rel="stylesheet" href="assets/css/Navbar-Centered-Brand-Dark-icons.css">
+    <style>
+      .complaint-card {
+            cursor: pointer;
+            background-color: #f8f9fa; /* Light grey background */
+            border: 1px solid #ddd;
+            transition: all 0.3s ease; /* Smooth transition for animation */
+            overflow: hidden;
+        }
+
+        .complaint-card.expanded {
+            height: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow when expanded */
+        }
+
+   
+        .complaint-description {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease; /* Smooth fade-in effect */
+        }
+        .complaint-card.expanded .complaint-description {
+            display: block;
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md bg-primary py-3" style="--bs-primary: #5C5CC7;--bs-primary-rgb: 92,92,199;">
+        <div class="container"><a class="navbar-brand d-flex align-items-center" href="#"><img src="assets/img/BAUET-Logo-250x244-1.png" width="61" height="57"><span class="fs-1 fw-bold">BORAL HALL</span></a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-2"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navcol-2"><input class="border rounded-pill" type="search" placeholder="Search" style="width: 60%;height: 70%;transform: translate(15px);"><button class="btn btn-light border rounded-circle" type="button" style="transform: perspective(70px) translate(17px);transform-origin: right;"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-search">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
+                        <path d="M21 21l-6 -6"></path>
+                    </svg></button>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active border rounded-circle" href="#" style="background: var(--bs-danger);margin: 2%;"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-sos" style="font-size: 27px;">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M7 8h-3a1 1 0 0 0 -1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-3"></path>
+                                <path d="M10 8h4v8h-4z"></path>
+                                <path d="M17 16h3a1 1 0 0 0 1 -1v-2a1 1 0 0 0 -1 -1h-2a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1h3"></path>
+                            </svg></a></li>
+                    <li class="nav-item"><a class="nav-link border rounded-circle" id ="profile" href="#" style="background: var(--bs-secondary);margin: 2%;"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-user" style="font-size: 27px;">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
+                                <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
+                            </svg></a></li>
+                    <li class="nav-item"><a class="nav-link border rounded-circle" href="#" style="background: var(--bs-secondary);margin: 2%;"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-bell" style="font-size: 27px;">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"></path>
+                                <path d="M9 17v1a3 3 0 0 0 6 0v-1"></path>
+                            </svg></a></li>
+                    <li class="nav-item"><a class="nav-link border rounded-circle" id="logout" href="#" style="background: var(--bs-secondary);margin: 2%;"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-logout" style="font-size: 27px;">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"></path>
+                                <path d="M9 12h12l-3 -3"></path>
+                                <path d="M18 15l3 -3"></path>
+                            </svg></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <h2 class="text-center mb-4">Complaints</h2>
+    <div class="container">
+        <div class="row" id="complaints-container">
+            <!-- Complaints will be dynamically loaded here -->
+        </div>
+    </div>
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvas-1" style="width: fit-content;">
+        <div class="bg-body shadow d-flex flex-column flex-shrink-0 position-fixed top-0 bottom-0" style="width: 4.5rem;"><a class="text-center link-body-emphasis d-block p-3 text-decoration-none border-bottom" href="/" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only"><img class="d-lg-flex" width="42" height="44" src="assets/img/BAUET-Logo-250x244-1.png"><span class="visually-hidden">Icon-only</span></a>
+            <ul class="nav nav-pills flex-column text-center nav-flush mb-auto">
+                <li class="nav-item"><a class="nav-link active link-light py-3 border-bottom rounded-0" data-bss-hover-animate="pulse" href="#" aria-current="page" style="background: var(--bs-light);"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-house-door" style="color: var(--bs-primary);font-size: 20px;">
+                            <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4z"></path>
+                        </svg></a></li>
+                <li class="nav-item"><a class="nav-link py-3 border-bottom rounded-0" data-bss-hover-animate="pulse" href="#"><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="1em" viewBox="0 0 24 24" width="1em" fill="currentColor" class="text-primary" style="font-size: 20px;">
+                            <rect fill="none" height="24" width="24"></rect>
+                            <path d="M21.05,17.56L3.08,18.5L3,17l17.98-0.94L21.05,17.56z M21,19.48H3v1.5h18V19.48z M23,13V4c0-1.1-0.9-2-2-2H3 C1.9,2,1,2.9,1,4v9c0,1.1,0.9,2,2,2h18C22.1,15,23,14.1,23,13z M21,13H3V4h18V13z M20,6c-1.68,0-3.04,0.98-3.21,2.23 C16.15,7.5,14.06,5.5,10.25,5.5c-4.67,0-6.75,3-6.75,3s2.08,3,6.75,3c3.81,0,5.9-2,6.54-2.73C16.96,10.02,18.32,11,20,11V6z"></path>
+                        </svg></a></li>
+                <li class="nav-item"><a class="nav-link py-3 border-bottom rounded-0" data-bss-hover-animate="pulse" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-message-circle-question text-primary" style="font-size: 20px;">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M15.02 19.52c-2.341 .736 -5 .606 -7.32 -.52l-4.7 1l1.3 -3.9c-2.324 -3.437 -1.426 -7.872 2.1 -10.374c3.526 -2.501 8.59 -2.296 11.845 .48c1.649 1.407 2.575 3.253 2.742 5.152"></path>
+                            <path d="M19 22v.01"></path>
+                            <path d="M19 19a2.003 2.003 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483"></path>
+                        </svg></a></li>
+                <li class="nav-item"><a class="nav-link text-bg-primary py-3 border-bottom rounded-0" data-bss-hover-animate="pulse" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-message-report text-white" style="font-size: 20px;">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z"></path>
+                            <path d="M12 8v3"></path>
+                            <path d="M12 14v.01"></path>
+                        </svg></a></li>
+                <li class="nav-item"><a class="nav-link text-bg-light py-3 border-bottom rounded-0" data-bss-hover-animate="pulse" href="room.html"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-relation-one-to-many text-primary" style="font-size: 20px;">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M3 5m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z"></path>
+                            <path d="M7 10h1v4"></path>
+                            <path d="M14 14v-4l3 4v-4"></path>
+                            <path d="M11 10.5l0 .01"></path>
+                            <path d="M11 13.5l0 .01"></path>
+                        </svg></a></li>
+            </ul>
+        </div>
+    </div>
+    <button class="btn btn-info" data-bss-hover-animate="pulse" type="button" 
+            style="padding: 10px 20px; position: fixed; bottom: 20px; right: 20px; z-index: 1050;" 
+            data-bs-toggle="offcanvas" data-bs-target="#offcanvas-1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" 
+             stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" 
+             stroke-linejoin="round" class="icon icon-tabler icon-tabler-square-rounded-arrow-right-filled" 
+             style="font-size: 19px;">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+            <path d="M12 2c-.218 0 -.432 .002 -.642 .005l-.616 .017l-.299 .013l-.579 .034l-.553 .046c-4.785 .464 -6.732 2.411 -7.196 7.196l-.046 .553l-.034 .579c-.005 .098 -.01 .198 -.013 .299l-.017 .616l-.004 .318l-.001 .324c0 .218 .002 .432 .005 .642l.017 .616l.013 .299l.034 .579l.046 .553c.464 4.785 2.411 6.732 7.196 7.196l.553 .046l.579 .034c.098 .005 .198 .01 .299 .013l.616 .017l.642 .005l.642 -.005l.616 -.017l.299 -.013l.579 -.034l.553 -.046c4.785 -.464 6.732 -2.411 7.196 -7.196l.046 -.553l.034 -.579c.005 -.098 .01 -.198 .013 -.299l.017 -.616l.005 -.642l-.005 -.642l-.017 -.616l-.013 -.299l-.034 -.579l-.046 -.553c-.464 -4.785 -2.411 -6.732 -7.196 -7.196l-.553 -.046l-.579 -.034a28.058 28.058 0 0 0 -.299 -.013l-.616 -.017l-.318 -.004l-.324 -.001zm.613 5.21l.094 .083l4 4a.927 .927 0 0 1 .097 .112l.071 .11l.054 .114l.035 .105l.03 .148l.006 .118l-.003 .075l-.017 .126l-.03 .111l-.044 .111l-.052 .098l-.074 .104l-.073 .082l-4 4a1 1 0 0 1 -1.497 -1.32l.083 -.094l2.292 -2.293h-5.585a1 1 0 0 1 -.117 -1.993l.117 -.007h5.585l-2.292 -2.293a1 1 0 0 1 -.083 -1.32l.083 -.094a1 1 0 0 1 1.32 -.083z" fill="currentColor" stroke-width="0"></path>
+        </svg>
+    </button>
+    <footer class="text-center py-4">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-lg-3" style="transform: rotate(0deg) skew(0deg);transform-origin: bottom;">
+                <div class="col"><a class="link-secondary" href="https://www.linkedin.com/in/raufirzaman/">Raufir Zaman Choudhury</a></div>
+                <div class="col"><a class="link-secondary" href="https://www.facebook.com/mueid016">Md Mueid Shahriar</a></div>
+                <div class="col">
+                    <ul class="list-inline my-2">
+                        <li class="list-inline-item"><a class="link-secondary" href="https://www.linkedin.com/in/syed-sharzil-ahmmed-71a192266/">Syed Sharzil Ahmmed</a></li>
+                        <li class="list-inline-item"></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row row-cols-1 row-cols-lg-3" style="transform: scale(0.88);height: fit-content;">
+                <div class="col-lg-2 offset-lg-5" style="height: fit-content;"><small class="lh-sm" style="height: fit-content;"><br>2025 ©RSM<br><br>&nbsp;</small></div>
+            </div>
+        </div>
+    </footer>
+ 
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+        import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+    
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBF-nMMW5lG44JfHxx4HxCbf5N81geOiRs",
+            authDomain: "bauet-hms-63f5b.firebaseapp.com",
+            databaseURL: "https://bauet-hms-63f5b-default-rtdb.firebaseio.com",
+            projectId: "bauet-hms-63f5b",
+            storageBucket: "bauet-hms-63f5b.appspot.com",
+            messagingSenderId: "200038506273",
+            appId: "1:200038506273:web:2e141fc9ec36de049ae860"
+        };
+    
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app); // Initialize Firebase Authentication
+        const firestore = getFirestore(app); // Initialize Firestore
+    
+        // Logout functionality
+        document.getElementById('logout').onclick = function () {
+            signOut(auth)
+                .then(() => {
+                    // Clear session storage
+                    sessionStorage.clear();
+    
+                    // Redirect to login page
+                    window.location.href = "login.html";
+                })
+                .catch((error) => {
+                    console.error("Error during logout:", error.message);
+                    alert("Failed to log out. Please try again.");
+                });
+        };
+    
+        // Prevent browser caching
+        window.onload = function () {
+            if (performance.navigation.type === 2) {
+                // Clear session storage and redirect to login if back button is pressed
+                sessionStorage.clear();
+                window.location.href = "login.html";
+            }
+        };
+    
+        // Function to load complaints from Firestore
+        async function loadComplaints() {
+            const container = document.getElementById("complaints-container");
+            container.innerHTML = ""; // Clear the container before loading complaints
+    
+            try {
+                // Fetch complaints from the "Complaints" collection in Firestore
+                const querySnapshot = await getDocs(collection(firestore, "Complaints"));
+                querySnapshot.forEach((doc) => {
+                    const complaint = doc.data(); // Get complaint data
+    
+                    // Ensure all required fields are present
+                    const subject = complaint.subject || "No Subject";
+                    const description = complaint.description || "No Description";
+                    const room = complaint.roomNumber || "No Room";
+                    const id = complaint.userId || "No ID";
+    
+                    const card = document.createElement("div");
+                    card.className = "col-md-4 mb-3";
+                    card.innerHTML = `
+                        <div class="card complaint-card" onclick="toggleComplaint('${doc.id}')">
+                            <div class="card-body">
+                                <h5 class="card-title">${subject}</h5>
+                                <p class="card-text complaint-description" id="description-${doc.id}">
+                                    ${description}
+                                </p>
+                                <p class="card-text"><b>Room:</b> ${room}</p>
+                                <p class="card-text"><b>ID:</b> ${id}</p>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error("Error loading complaints:", error.message);
+                alert("Failed to load complaints. Please try again.");
+            }
+        }
+    
+        // Function to toggle complaint description visibility
+        window.toggleComplaint = function (id) {
+            const description = document.getElementById(`description-${id}`);
+            const card = description.closest(".complaint-card");
+            card.classList.toggle("expanded");
+        };
+    
+        // Load complaints on page load
+        document.addEventListener("DOMContentLoaded", loadComplaints);
+        document.getElementById("profile").onclick = function () {
+            const studentId = new URLSearchParams(window.location.search).get("id");
+            if (studentId) {
+                window.location.href = `profile.html?id=${studentId}`;
+            } else {
+                alert("Student ID not found in URL.");
+            }
+        };
+    </script>
+</body>
+
+</html>
