@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meal Management | Boral Hall</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link rel="shortcut icon" href="images/BAUET-Logo.png" type="image/x-icon" />
+  <link rel="stylesheet" href="MealManagement.css" />
+</head>
+
+<body>
+  <div class="container">
+    <aside class="aside">
+      <div class="top">
+        <div class="logo">
+          <img src="images/BAUET-Logo.png" alt="Boral Hall Logo" style="width: 2.5rem; height: 2.5rem;" />
+          <h2 class="danger" style="white-space: nowrap;">Boral Hall</h2>
+        </div>
+        <div class="close" title="Close Sidebar">
+          <span class="material-icons">close</span>
+        </div>
+      </div>
+      <div class="sidebar">
+        <a href="StudentDashboard.html">
+          <span class="material-icons">dashboard</span>
+          <h3>Dashboard</h3>
+        </a>
+        <a href="#">
+          <span class="material-icons">person</span>
+          <h3>Profile</h3>
+        </a>
+        <a href="#">
+          <span class="material-icons">payments</span>
+          <h3>Check Payments</h3>
+        </a>
+        <a href="#">
+          <span class="material-icons">hotel</span>
+          <h3>Guest Room Booking</h3>
+        </a>
+        <a href="MealManagement.html" class="active">
+          <span class="material-icons">restaurant_menu</span>
+          <h3>Meal Management</h3>
+        </a>
+        <a href="#">
+          <span class="material-icons">touch_app</span>
+          <h3>Give Attendance</h3>
+        </a>
+        <a href="#">
+          <span class="material-icons">report</span>
+          <h3>Complaints</h3>
+        </a>
+        <a href="About.html">
+          <span class="material-icons">info</span>
+          <h3>About</h3>
+        </a>
+        <a href="LoginRegister.html">
+          <span class="material-icons">logout</span>
+          <h3>Logout</h3>
+        </a>
+        <p class="rsm">2025©️RSM</p>
+      </div>
+    </aside>
+
+    <main>
+      <h1 class="tittle">Meal Management</h1>
+      <div class="dashboard">
+        <div class="about-container">
+          <div class="max-w-6xl mx-auto w-full">
+            <div class="flex justify-between items-center mb-6 bg-white p-4 rounded-lg shadow-md">
+              <button id="prevMonth" class="bg-blue-500 text-white px-4 py-2 rounded">Previous Month</button>
+              <h2 id="monthLabel" class="text-2xl font-semibold"></h2>
+              <button id="nextMonth" class="bg-blue-500 text-white px-4 py-2 rounded">Next Month</button>
+            </div>
+            <div id="calendar" class="grid grid-cols-7 gap-4 mb-8"></div>
+            <button id="submitMeals" class="submitMeals">Submit Meals</button>
+            <div class="text-center bg-white p-6 rounded-lg shadow-lg">
+              <h2 class="text-2xl font-semibold">Total Monthly Meal Cost</h2>
+              <p id="totalCost" class="text-green-700 text-3xl font-bold mt-2">৳0</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div class="right">
+      <div class="top">
+        <button id="menu_bar" type="button">
+          <span class="material-icons">menu</span>
+        </button>
+
+        <button class="notification-btn" title="Notifications" type="button">
+          <span class="material-icons">notifications</span>
+        </button>
+
+        <a href="LoginRegister.html" id="logoutButton">
+        <button class="logout-btn" title="Logout" type="button">
+          <span class="material-icons">logout</span>
+        </button>
+        </a>
+
+        <div class="profile">
+          <div class="profile-photo" title="Profile">
+            <img src="images/Mueid.png" alt="Profile Photo" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBF-nMMW5lG44JfHxx4HxCbf5N81geOiRs",
+    authDomain: "bauet-hms-63f5b.firebaseapp.com",
+    databaseURL: "https://bauet-hms-63f5b-default-rtdb.firebaseio.com",
+    projectId: "bauet-hms-63f5b",
+    storageBucket: "bauet-hms-63f5b.appspot.com",
+    messagingSenderId: "200038506273",
+    appId: "1:200038506273:web:2e141fc9ec36de049ae860"
+  };
+  firebase.initializeApp(firebaseConfig);
+</script>
+
+  <script src="MealManagement.js"></script>
+</body>
+
+</html>

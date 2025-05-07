@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Dashboard | Boral Hall</title>
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link rel="shortcut icon" href="images/BAUET-Logo.png" type="image/x-icon" />
+  
+  <link rel="stylesheet" href="StudentDashboard.css" />
+</head>
+
+<body>
+  <div class="container">
+
+    <aside class="aside">
+      <div class="top">
+        <div class="logo">
+          <img src="images/BAUET-Logo.png" alt="Boral Hall Logo" style="width: 2.5rem; height: 2.5rem;" />
+          <h2 class="danger" style="white-space: nowrap;">Boral Hall</h2>
+        </div>
+        <div class="close" title="Close Sidebar">
+          <span class="material-icons">close</span>
+        </div>
+      </div>
+
+      <div class="sidebar">
+        <a href="StudentDashboard.html" class="active">
+          <span class="material-icons">dashboard</span>
+          <h3>Dashboard</h3>
+        </a>
+
+        <a href="#">
+          <span class="material-icons">person</span>
+          <h3>Profile</h3>
+        </a>
+
+        <a href="#">
+          <span class="material-icons">payments</span>
+          <h3>Check Payments</h3>
+        </a>
+
+        <a href="#">
+          <span class="material-icons">hotel</span>
+          <h3>Guest Room Booking</h3>
+        </a>
+
+        <a href="MealManagement.html">
+          <span class="material-icons">restaurant_menu</span>
+          <h3>Meal Management</h3>
+        </a>
+
+        <a href="#">
+          <span class="material-icons">touch_app</span>
+          <h3>Give Attendance</h3>
+        </a>
+
+        <a href="#">
+          <span class="material-icons">report</span>
+          <h3>Complaints</h3>
+        </a>
+        
+        <a href="About.html">
+          <span class="material-icons">info</span>
+          <h3>About</h3>
+        </a>
+    
+        <a href="LoginRegister.html" id="logoutButton">
+          <span class="material-icons">logout</span>
+          <h3>Logout</h3>
+        </a>
+        
+        <p class="rsm">2025©️RSM</p>
+      </div>
+    </aside>
+
+    <main>
+      <h1>Student Dashboard</h1>
+      <div class="dashboard">
+
+        <div class="card payment">
+          <span class="material-icons card-icon">payments</span>
+          <div class="section-info">
+            <h2>Check Payments</h2>
+            <p>Check your payment status and history</p>
+            <button class="action-btn">View</button>
+          </div>
+        </div>
+
+        <div class="card booking">
+          <span class="material-icons card-icon">hotel</span>
+          <div class="section-info">
+            <h2>Guest Room Booking</h2>
+            <p>Book your guest room</p>
+            <button class="action-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="card meal">
+          <span class="material-icons card-icon">restaurant_menu</span>
+          <div class="section-info">
+            <h2>Meal Management</h2>
+            <p>Manage your daily meal status</p>
+            <a href="MealManagement.html">
+            <button class="action-btn">Manage</button>
+          </a>
+          </div>
+        </div>
+
+        <div class="card complaint">
+          <span class="material-icons card-icon">report</span>
+          <div class="section-info">
+            <h2>Complaints</h2>
+            <p>Submit and track your complaints easily</p>
+            <button class="action-btn">Submit</button>
+          </div>
+        </div>
+
+        <div class="card sos">
+          <span class="material-icons warning">warning</span>
+          <div class="sos-info">
+            <h2>SOS</h2>
+            <p>Tap to request emergency help instantly</p>
+            <button class="sos-btn">Send SOS</button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <div class="right">
+      <div class="top">
+        
+        <button id="menu_bar" type="button">
+          <span class="material-icons">menu</span>
+        </button>
+
+        <button class="notification-btn" title="Notifications" type="button">
+          <span class="material-icons">notifications</span>
+        </button>
+
+        <a href="LoginRegister.html">
+        <button class="logout-btn" id="logoutButton" title="Logout" type="button">
+          <span class="material-icons">logout</span>
+        </button>
+      </a>
+
+        <div class="profile">
+          <div class="profile-photo" title="Profile">
+            <img src="images/Mueid.png" alt="Profile Photo" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script src="StudentDashboard.js"></script>
+</body>
+</html>

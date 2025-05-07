@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login & Register | Boral Hall</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="shortcut icon" href="images/hall.jpg" type="image/x-icon" />
+  <link rel="stylesheet" href="LoginRegister.css">
+</head>
+
+<body>
+  <div class="container" id="signup" style="display: none;">
+    <h1 class="form-title">Register</h1>
+    <form id="signUpForm">
+      <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input type="text" name="fName" id="fName" placeholder="First Name" required />
+        <label for="fName">First Name</label>
+      </div>
+
+      <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input type="text" name="lName" id="lName" placeholder="Last Name" required />
+        <label for="lName">Last Name</label>
+      </div>
+
+      <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input type="text" name="studentID" id="studentID" placeholder="StudentID" required />
+        <label for="studentID">ID</label>
+      </div>
+
+      <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" name="email" id="email" placeholder="Email" required />
+        <label for="email">Email</label>
+      </div>
+
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" name="password" id="password" placeholder="Password" required />
+        <label for="password">Password</label>
+        <i class="fas fa-eye toggle-password"></i>
+      </div>
+
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" name="cPassword" id="cPassword" placeholder="Confirm Password" required />
+        <label for="cPassword">Confirm Password</label>
+        <i class="fas fa-eye toggle-password"></i>
+      </div>
+
+      <div class="input-group">
+        <i class="fas fa-phone"></i>
+        <input type="tel" name="phone" id="phone" placeholder="Phone Number" required />
+        <label for="phone">Phone Number</label>
+      </div>
+
+      <div class="input-group">
+        <i class="fas fa-calendar"></i>
+        <input type="date" name="dob" id="dob" required />
+        <label for="dob">Date of Birth</label>
+      </div>
+
+      <div class="input-group">
+        <i class="fas fa-map-marker-alt"></i>
+        <input type="text" name="address" id="address" placeholder="Address" required />
+        <label for="address">Address</label>
+      </div>
+
+      <input type="submit" class="btn" value="Sign Up" />
+    </form>
+
+    <div class="links">
+      <p>Already have an account?</p>
+      <button class="button" id="signInButton">Sign In</button>
+    </div>
+  </div>
+
+  <div class="container" id="signIn">
+    <div class="header">
+      <img class="img" src="images/BAUET-Logo.png" alt="Boral Hall Logo" style="width: 3.5rem; height: 3.5rem;" />
+      <h1 class="title">BAUET</h1>
+    </div>
+    <h1 class="form-title">Sign In to Boral Hall</h1>
+    <form id="signInForm">
+      <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" name="email" id="loginEmail" placeholder="Email" required />
+        <label for="loginEmail">Email</label>
+      </div>
+
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" name="password" id="loginPassword" placeholder="Password" required />
+        <label for="loginPassword">Password</label>
+        <i class="fas fa-eye toggle-password"></i>
+      </div>
+
+      <input type="submit" class="btn" value="Sign In" />
+    </form>
+    <p class="recover">
+      <a href="#">Forgot Password</a>
+    </p>
+
+    <div class="links">
+      <p>Don't have an account yet?</p>
+      <button class="button" id="signUpButton">Sign Up</button>
+    </div>
+  </div>
+
+  <script type="module" src="LoginRegister.js"></script>
+</body>
+</html>
+ 
