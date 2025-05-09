@@ -4,10 +4,13 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+// Add this to your imports at the top
 import {
   getDatabase,
   ref,
-  set
+  set,
+  get,
+  child
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
 
 const firebaseConfig = {
@@ -72,7 +75,7 @@ signUpForm.addEventListener("submit", (e) => {
         address: address,
         role: "member"
       }).then(() => {
-        alert("Registered successfully!");
+        alert("Registered successfully and data saved!");
         signUpForm.reset();
         signInContainer.style.display = "block";
         signUpContainer.style.display = "none";
@@ -89,16 +92,61 @@ const signInForm = document.getElementById("signInForm");
 signInForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
+ 
   const email = document.getElementById("loginEmail").value;
   const password = document.getElementById("loginPassword").value;
 
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-      signInForm.reset();
-      window.location.href = "StudentDashboard.html";
+      const user = userCredential.user;
+      
+      // Search for the user in the database to check role
+      const dbRef = ref(database);
+      
+      // Query the entire users collection
+      get(child(dbRef, "users"))
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            let foundUser = null;
+            let userId = null;
+            
+            // Iterate through all users to find the one with matching email
+            snapshot.forEach((childSnapshot) => {
+              const userData = childSnapshot.val();
+              if (userData.email === email) {
+                foundUser = userData;
+                userId = childSnapshot.key;
+                return true; // Break the forEach loop
+              }
+            });
+            
+            if (foundUser) {
+              // Store user ID in session storage for later use
+              sessionStorage.setItem("userId", userId);
+              
+              // Check role and redirect accordingly
+              if (foundUser.role === "admin") {
+                alert("Admin login successful!");
+                window.location.href = "AdminDashboard.html";
+              } else {
+                // Default role is member
+                alert("Login successful!");
+                window.location.href = "StudentDashboard.html";
+              }
+            } else {
+              alert("User data not found in database!");
+            }
+          } else {
+            alert("No user data available in database!");
+          }
+          signInForm.reset();
+        })
+        .catch((error) => {
+          alert("Error accessing user data: " + error.message);
+        });
     })
     .catch((error) => {
-      alert("Error: " + error.message);
+      alert("Login Error: " + error.message);
     });
 });
 
