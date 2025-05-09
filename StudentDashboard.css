@@ -290,7 +290,7 @@ main .dashboard {
     background: none;
     border: none;
     cursor: pointer;
-    margin-top: .1rem;
+    margin-top: .21rem;
     margin-right: .1rem;
     display: flex;
     font-size: 1rem;
@@ -318,16 +318,17 @@ main .dashboard {
     transform: scale(1.2);
 }
 
-.profile-photo img {
+.profile-photo {
     width: 2.4rem;
     height: 2.4rem;
+    margin-top: 1rem;
     margin-right: 1rem;
     border-radius: 50%;
     object-fit: cover;
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.profile-photo img:hover {
+.profile-photo :hover {
     transform: scale(1.2); 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
 }

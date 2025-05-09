@@ -279,8 +279,9 @@ main .dashboard {
 
 .right .top {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
+    gap: 1rem;
     background: var(--clr-white);
     padding: var(--padding);
     height: 3rem;
@@ -288,25 +289,51 @@ main .dashboard {
     z-index: 5;
 }
 
-.logout-btn,
-.notification-btn {
+.logout-btn {
     background: none;
     border: none;
-    margin-top: .1rem;
     cursor: pointer;
+    margin-top: .21rem;
+    margin-right: .1rem;
+    display: flex;
     font-size: 1rem;
     color: var(--clr-dark);
 }
 
 .logout-btn:hover {
     color: var(--clr-danger);
+    transform: scale(1.2);
 }
 
-.profile-photo img {
+.notification-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-top: .3rem;
+    margin-right: .1rem;
+    display: flex;
+    font-size: 1rem;
+    color: var(--clr-dark);
+}
+
+.notification-btn:hover {
+    color: var(--clr-danger);
+    transform: scale(1.2);
+}
+
+.profile-photo {
     width: 2.4rem;
     height: 2.4rem;
+    margin-top: 1rem;
+    margin-right: 1rem;
     border-radius: 50%;
     object-fit: cover;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.profile-photo :hover {
+    transform: scale(1.2); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
 }
 
 #menu_bar {
