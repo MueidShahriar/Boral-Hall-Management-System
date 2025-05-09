@@ -4,7 +4,6 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-// Add this to your imports at the top
 import {
   getDatabase,
   ref,
@@ -75,7 +74,7 @@ signUpForm.addEventListener("submit", (e) => {
         address: address,
         role: "member"
       }).then(() => {
-        alert("Registered successfully and data saved!");
+        alert("Registered successfully");
         signUpForm.reset();
         signInContainer.style.display = "block";
         signUpContainer.style.display = "none";
@@ -92,45 +91,31 @@ const signInForm = document.getElementById("signInForm");
 signInForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
- 
   const email = document.getElementById("loginEmail").value;
   const password = document.getElementById("loginPassword").value;
 
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user;
-      
-      // Search for the user in the database to check role
       const dbRef = ref(database);
-      
-      // Query the entire users collection
       get(child(dbRef, "users"))
         .then((snapshot) => {
           if (snapshot.exists()) {
             let foundUser = null;
             let userId = null;
-            
-            // Iterate through all users to find the one with matching email
             snapshot.forEach((childSnapshot) => {
               const userData = childSnapshot.val();
               if (userData.email === email) {
                 foundUser = userData;
                 userId = childSnapshot.key;
-                return true; // Break the forEach loop
+                return true;
               }
             });
-            
             if (foundUser) {
-              // Store user ID in session storage for later use
               sessionStorage.setItem("userId", userId);
-              
-              // Check role and redirect accordingly
               if (foundUser.role === "admin") {
-                alert("Admin login successful!");
                 window.location.href = "AdminDashboard.html";
               } else {
-                // Default role is member
-                alert("Login successful!");
                 window.location.href = "StudentDashboard.html";
               }
             } else {
