@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Complaints System</title>
+
+    <!-- Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link rel="shortcut icon" href="images/BAUET-Logo.png" type="image/x-icon" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#7380ec',
+                        'primary-variant': '#111e88',
+                        success: '#41f1b6',
+                        danger: '#000',
+                        warning: '#d40c0c',
+                        dark: '#000209',
+                        'dark-variant': '#677483',
+                        'info-dark': '#7d8da1',
+                        'info-light': '#dce1eb',
+                        light: 'rgba(132, 139, 200, 0.18)',
+                        bg: '#f6f6f9',
+                    },
+                    boxShadow: {
+                        'card': '0 4px 24px 0 rgba(115, 128, 236, 0.08)',
+                        'card-hover': '0 8px 32px 0 rgba(115, 128, 236, 0.18)',
+                        'card-expanded': '0 12px 36px 0 rgba(115, 128, 236, 0.22)',
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom styles that can't be easily achieved with Tailwind */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        /* === Root Variables === */
+        :root {
+            --clr-primary: #7380ec;
+            --clr-primary-variant: #111e88;
+            --clr-success: #41f1b6;
+            --clr-danger: #000;
+            --clr-warning: #d40c0c;
+            --clr-white: #fff;
+            --clr-dark: #000209;
+            --clr-dark-variant: #677483;
+            --clr-info-dark: #7d8da1;
+            --clr-info-light: #dce1eb;
+            --clr-light: rgba(132, 139, 200, 0.18);
+            --clr-bg: #f6f6f9;
+
+            --card-radius: 2rem;
+            --radius-1: 0.4rem;
+            --radius-2: 0.8rem;
+            --radius-3: 1.2rem;
+
+            --padding: 1.2rem;
+            --card-padding: 1.8rem;
+            --shadow: 0 2rem 3rem var(--clr-light);
+        }
+        
+        /* === Reset & Base === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            list-style: none;
+            text-decoration: none;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: white;
+            color: var(--clr-dark);
+            font-size: 0.88rem;
+            overflow-x: hidden;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    width: 100vw;
+    height: 100vh;
+        }
+        
+        /* === Layout === */
+        .container {
+    display: grid;
+    width: 100%;
+    margin: 0;
+    grid-template-areas: 
+        "sidebar main"
+        "sidebar main";
+    grid-template-columns: 14rem 1fr;
+    grid-template-rows: auto 1fr;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+        /* === Sidebar === */
+        .aside {
+    grid-area: sidebar;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    background: var(--clr-white);
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+    z-index: 10;
+    padding-left: 0;
+    margin-left: 0;
+    justify-self: start;
+}
+
+        .aside .top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(164, 158, 158, 0.1);
+        }
+
+        .aside .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .aside .logo h2 {
+            font-size: 1.2rem;
+        }
+
+        .aside .top .close span {
+            display: none;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            padding-top: 1rem;
+            height: 85vh;
+        }
+        .sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem; /* Increased gap between icon and text */
+    font-size: 0.7rem; /* Slightly larger base font size */
+    padding: 0.5rem; /* More padding for larger click area */
+    color: var(--clr-dark);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius-1);
+    background: var(--clr-white);
+    margin-bottom: 0.3rem; /* More space between menu items */
+    transition: background 0.2s, color 0.2s;
+}
+
+        .sidebar a:hover {
+            background: rgba(115, 128, 236, 0.1);
+            color: var(--clr-primary);
+        }
+
+        .sidebar a.Active {
+            background: var(--clr-light);
+            border-left: 5px solid var(--clr-primary-variant);
+            color: var(--clr-primary-variant);
+        }
+
+        .sidebar a span {
+            font-size: 1.6rem;
+            transition: margin 0.2s ease;
+        }
+
+        .sidebar a:hover span {
+            margin-left: 0.25rem;
+        }
+        .sidebar a h3 {
+    font-size: 0.9rem; /* Larger text */
+    font-weight: 600; /* Bolder text */
+}
+
+.sidebar a.Active h3 {
+    font-weight: 700; /* Even bolder for active item */
+}
+        
+        .sidebar .rsm {
+            font-size: 0.78rem;
+            font-weight: 600;
+            margin-left: 1rem;
+            color: rgba(31, 31, 164, 0.996);
+        }
+        main {
+    grid-area: main;
+    position: relative;
+    padding-top: 5rem; /* Space for the right panel on top */
+    justify-self: center;
+    width: 95%;
+    max-width: 1400px;
+    margin: 1rem auto;
+    background: var(--clr-bg);
+    border-radius: var(--radius-2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
+    padding: 2.5rem 2rem 2rem 2rem;
+    min-height: 80vh;
+    transition: background 0.3s;
+}
+
+main h2 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--clr-primary-variant);
+    margin-bottom: 2rem;
+    letter-spacing: 1.5px;
+    text-align: center;
+    text-transform: uppercase;
+    width: 100%;
+    position: relative;
+    padding-bottom: 0.8rem;
+}
+
+/* Add decorative underline to heading */
+main h2::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    height: 4px;
+    width: 100px;
+    background: var(--clr-primary);
+    border-radius: 2px;
+}
+
+/* Make complaint card headings (h5) more prominent as well */
+.complaint-card h5 {
+    color: var(--clr-primary-variant);
+    font-weight: 700;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5px;
+}
+        
+        /* === Right Panel === */
+/* === Right Panel === */
+.right {
+    position: fixed; /* Changed from absolute to fixed */
+    top: 0;
+    right: 0;
+    width: auto;
+    z-index: 100;
+    margin: 0.5rem 1rem;
+}
+
+.right .top {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background: var(--clr-white);
+    padding: 0.5rem;
+    border-radius: var(--radius-1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    height: 3rem;
+}
+        .notification-btn,
+        .logout-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-top: .1rem;
+            display: flex;
+            font-size: 1rem;
+            color: var(--clr-dark);
+        }
+
+        .logout-btn:hover {
+            color: var(--clr-danger);
+        }
+        
+        .profile-photo img {
+            width: 2.4rem;
+            height: 2.4rem;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+.right .top button {
+    margin: 0 0.6rem; /* Add horizontal space between buttons */
+}
+        #menu_bar {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--clr-dark);
+        }
+        .complaint-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1200px; /* Set a max width for better readability */
+}
+
+        /* === Animation for expanded cards === */
+        .complaint-card {
+    background: var(--clr-white);
+    border-radius: var(--radius-2);
+    padding: 1.25rem; /* Slightly reduced padding */
+    box-shadow: 0 4px 24px 0 rgba(115, 128, 236, 0.08);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 180px; /* Slightly reduced height */
+    display: flex;
+    flex-direction: column;
+}
+/* Solved Button Styling */
+.solved-btn {
+    background: var(--clr-success);
+    color: white;
+    border: none;
+    border-radius: var(--radius-1);
+    padding: 0.5rem 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(65, 241, 182, 0.2);
+}
+
+.solved-btn:hover {
+    background: var(--clr-primary-variant);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(65, 241, 182, 0.3);
+}
+        .complaint-card:hover {
+            box-shadow: 0 8px 32px 0 rgba(115, 128, 236, 0.18);
+            transform: translateY(-4px) scale(1.02);
+        }
+
+        .complaint-card h5 {
+            color: var(--clr-primary-variant);
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .complaint-card p {
+            margin-bottom: 0.5rem;
+        }
+        
+        .complaint-description {
+            transition: opacity 0.3s ease;
+        }
+        
+        /* === Responsive Design === */
+        @media screen and (max-width: 1200px) {
+    .container {
+        grid-template-columns: 7rem 1fr;
+    }
+}
+@media screen and (max-width: 768px) {
+    .container {
+        grid-template-areas: 
+            "main"
+            "main";
+        grid-template-columns: 1fr;
+    }
+    
+    .aside {
+        position: fixed;
+        transform: translateX(-100%);
+    }
+    
+    .aside.show {
+        transform: translateX(0);
+    }
+    
+    main {
+        padding-top: 5rem;
+    }
+    
+    .right {
+        width: 100%;
+        position: fixed;
+        top: 0;
+        right: 0;
+        background: var(--clr-white);
+        margin: 0;
+        padding: 0 1rem;
+    }
+    
+    #menu_bar {
+        display: inline-block;
+    }
+}
+        
+        /* === Complaint Grid === */
+        .complaint-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        @media (max-width: 992px) {
+    .complaint-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .complaint-grid {
+        grid-template-columns: 1fr;
+    }
+}
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar Section -->
+        <aside class="aside">
+            <div class="top">
+                <div class="logo">
+                    <img src="images/BAUET-Logo.png" alt="Boral Hall Logo" style="width: 2.5rem; height: 2.5rem;">
+                    <h2 class="danger" style="white-space: nowrap;">Boral Hall</h2>
+                </div>
+                <div class="close" title="Close Sidebar">
+                    <span class="material-icons">close</span>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <a href="AdminDashboard.html"><span class="material-icons">dashboard</span>
+                    <h3>Dashboard</h3>
+                </a>
+                <a href="#"><span class="material-icons">pending</span>
+                    <h3>Check Request</h3>
+                </a>
+                <a href="#"><span class="material-icons">picture_as_pdf</span>
+                    <h3>Add Documents</h3>
+                </a>
+                <a href="room.html"><span class="material-icons">corporate_fare</span>
+                    <h3>Room Allocation</h3>
+                </a>
+                <a href="#"><span class="material-icons">search</span>
+                    <h3>Searching Student Info</h3>
+                </a>
+                <a href="#"><span class="material-icons">co_present</span>
+                    <h3>Attendance Report</h3>
+                </a>
+                <a href="#"><span class="material-icons">restaurant_menu</span>
+                    <h3>Meal Report</h3>
+                </a>
+                <a href="complaints.html" class="Active"><span class="material-icons">report</span>
+                    <h3>Check Complaints</h3>
+                </a>
+                <a href="#" id="logout"><span class="material-icons">logout</span>
+                    <h3>Log Out</h3>
+                </a>
+                <p class="rsm">2025©️RSM</p>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main>
+            <h2>Complaints</h2>
+            <div class="complaint-grid" id="complaints-container">
+                <!-- Complaints will be dynamically loaded here -->
+            </div>
+        </main>
+
+        <!-- Right Panel -->
+        <div class="right">
+            <div class="top">
+                <!-- Mobile Menu Button -->
+                <button id="menu_bar" type="button">
+                    <span class="material-icons">menu</span>
+                </button>
+
+                <button class="notification-btn" title="Notifications" type="button">
+                    <span class="material-icons">notifications</span>
+                </button>
+
+                <button class="logout-btn" title="Logout" type="button">
+                    <span class="material-icons">logout</span>
+                </button>
+
+                <div class="profile">
+                    <div class="profile-photo" title="Profile">
+                        <img src="assets/img/profile-user.png" alt="Profile Photo" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+        import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+    
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBF-nMMW5lG44JfHxx4HxCbf5N81geOiRs",
+            authDomain: "bauet-hms-63f5b.firebaseapp.com",
+            databaseURL: "https://bauet-hms-63f5b-default-rtdb.firebaseio.com",
+            projectId: "bauet-hms-63f5b",
+            storageBucket: "bauet-hms-63f5b.appspot.com",
+            messagingSenderId: "200038506273",
+            appId: "1:200038506273:web:2e141fc9ec36de049ae860"
+        };
+    
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app); // Initialize Firebase Authentication
+        const firestore = getFirestore(app); // Initialize Firestore
+    
+        // Logout functionality
+        document.getElementById('logout').onclick = function () {
+            signOut(auth)
+                .then(() => {
+                    // Clear session storage
+                    sessionStorage.clear();
+    
+                    // Redirect to login page
+                    window.location.href = "login.html";
+                })
+                .catch((error) => {
+                    console.error("Error during logout:", error.message);
+                    alert("Failed to log out. Please try again.");
+                });
+        };
+    
+        // Prevent browser caching
+        window.onload = function () {
+            if (performance.navigation.type === 2) {
+                // Clear session storage and redirect to login if back button is pressed
+                sessionStorage.clear();
+                window.location.href = "login.html";
+            }
+        };
+    
+        // Function to load complaints from Firestore
+        async function loadComplaints() {
+    const container = document.getElementById("complaints-container");
+    container.innerHTML = ""; // Clear the container before loading complaints
+
+    try {
+        // Fetch complaints from the "Complaints" collection in Firestore
+        const querySnapshot = await getDocs(collection(firestore, "Complaints"));
+        querySnapshot.forEach((doc) => {
+            const complaint = doc.data();
+            const docId = doc.id;  // Get complaint data
+
+            // Ensure all required fields are present
+            const subject = complaint.subject || "No Subject";
+            const description = complaint.description || "No Description";
+            const room = complaint.roomNumber || "No Room";
+            const id = complaint.userId || "No ID";
+
+            const card = document.createElement("div");
+            card.className = "complaint-card";
+            card.id = `card-${doc.id}`;
+            
+            // Modified card HTML to include the button with proper styling
+            card.innerHTML = `
+                <h5>${subject}</h5>
+                <p><b>Room:</b> ${room}</p>
+                <p><b>ID:</b> ${id}</p>
+                <div class="complaint-description hidden opacity-0 mt-4 pt-2 border-t border-light" id="description-${doc.id}">
+                    ${description}
+                </div>
+                <div class="mt-auto pt-3 text-right">
+                    <button class="solved-btn" onclick="markAsSolved('${doc.id}', event)">Solved</button>
+                </div>
+            `;
+            
+            card.onclick = function(e) {
+                // Don't toggle the complaint if the button was clicked
+                if (!e.target.classList.contains('solved-btn')) {
+                    toggleComplaint(doc.id);
+                }
+            };
+            
+            container.appendChild(card);
+        });
+    } catch (error) {
+        console.error("Error loading complaints:", error.message);
+        alert("Failed to load complaints. Please try again.");
+    }
+}
+
+// 3. Add the markAsSolved function to the window object
+window.markAsSolved = async function(id, event) {
+    // Stop the click event from propagating to the card
+    if (event) {
+        event.stopPropagation();
+    }
+    
+    try {
+        // Reference to the specific complaint document
+        const complaintRef = doc(firestore, "Complaints", id);
+        
+        // Delete the document from Firestore
+        await deleteDoc(complaintRef);
+        
+        // Remove the card from the UI with animation
+        const card = document.getElementById(`card-${id}`);
+        if (card) {
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.8)';
+            
+            // After animation completes, remove the card
+            setTimeout(() => {
+                card.remove();
+            }, 300);
+        }
+        
+        // Show success message
+        alert("Complaint marked as solved and removed!");
+    } catch (error) {
+        console.error("Error removing complaint:", error);
+        alert("Failed to mark complaint as solved. Please try again.");
+    }
+};
+        // Function to toggle complaint description visibility
+        window.toggleComplaint = function (id) {
+            const description = document.getElementById(`description-${id}`);
+            const card = description.closest(".complaint-card");
+            
+            if (description.classList.contains("hidden")) {
+                description.classList.remove("hidden");
+                setTimeout(() => {
+                    description.classList.remove("opacity-0");
+                    card.classList.add("shadow-card-expanded", "scale-103");
+                }, 10);
+            } else {
+                description.classList.add("opacity-0");
+                setTimeout(() => {
+                    description.classList.add("hidden");
+                    card.classList.remove("shadow-card-expanded", "scale-103");
+                }, 300);
+            }
+        };
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const studentId = urlParams.get('id');
+        document.querySelector("[title='Profile']").onclick = function () {
+            window.location.href = `profile.html?id=${studentId}`;
+        };
+    
+        // Load complaints on page load
+        document.addEventListener("DOMContentLoaded", function() {
+            loadComplaints();
+            
+            // Mobile menu functionality
+            const menuBtn = document.getElementById('menu_bar');
+            const sidebar = document.querySelector('.aside');
+            const closeBtn = document.querySelector('.close span');
+
+            // Mobile menu open
+            if (menuBtn && sidebar) {
+                menuBtn.addEventListener('click', () => {
+                    sidebar.classList.add('show');
+                });
+            }
+
+            // Mobile menu close
+            if (closeBtn && sidebar) {
+                closeBtn.addEventListener('click', () => {
+                    sidebar.classList.remove('show');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

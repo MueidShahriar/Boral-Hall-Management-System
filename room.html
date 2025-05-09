@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Room Allocaton System</title>
+
+    <!-- Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link rel="shortcut icon" href="images/BAUET-Logo.png" type="image/x-icon" />
+    <!-- Main CSS -->
+    
+    <style>
+        
+        /* === Google Fonts === */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        /* === Root Variables === */
+        :root {
+            --clr-primary: #7380ec;
+            --clr-primary-variant: #111e88;
+            --clr-success: #41f1b6;
+            --clr-danger: #000;
+            --clr-warning: #d40c0c;
+            --clr-white: #fff;
+            --clr-dark: #000209;
+            --clr-dark-variant: #677483;
+            --clr-info-dark: #7d8da1;
+            --clr-info-light: #dce1eb;
+            --clr-light: rgba(132, 139, 200, 0.18);
+            --clr-bg: #f6f6f9;
+
+            --card-radius: 2rem;
+            --radius-1: 0.4rem;
+            --radius-2: 0.8rem;
+            --radius-3: 1.2rem;
+
+            --padding: 1.2rem;
+            --card-padding: 1.8rem;
+            --shadow: 0 2rem 3rem var(--clr-light);
+        }
+
+        /* === Reset & Base === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            list-style: none;
+            text-decoration: none;
+        }
+        /* --- Button Styles: Solid Blue, Hover Purple, Animated Gradient Swap --- */
+.btn-primary {
+    background: #111e88; /* Solid Blue */
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-2);
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 0.6rem 2.2rem;
+    box-shadow: 0 4px 16px 0 rgba(115, 128, 236, 0.10);
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s cubic-bezier(.4,2,.6,1), color 0.2s, transform 0.2s;
+    /* For smooth color swap */
+    background-image: linear-gradient(90deg, #111e88 0%, #7380ec 100%);
+    background-size: 200% 100%;
+    background-position: left;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-position: right;
+    background: #7380ec; /* Solid Purple */
+    color: #fff;
+    transform: translateY(-2px) scale(1.05) rotate(-2deg);
+    box-shadow: 0 8px 32px 0 rgba(115, 128, 236, 0.18);
+    transition: background 0.4s cubic-bezier(.4,2,.6,1), color 0.2s, transform 0.2s;
+}
+
+/* --- Animation for Add/Remove Person Buttons --- */
+.btn-success, .btn-danger {
+    border-radius: var(--radius-1);
+    font-weight: 600;
+    font-size: 1.2rem;
+    padding: 0.4rem 1.2rem;
+    box-shadow: 0 2px 8px 0 rgba(65, 241, 182, 0.10);
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-success {
+    background: #41f1b6;
+    color: #fff;
+    border: none;
+}
+.btn-success:hover, .btn-success:focus {
+    background: #111e88;
+    color: #fff;
+    transform: scale(1.15) rotate(-8deg);
+    box-shadow: 0 8px 32px 0 rgba(65, 241, 182, 0.18);
+    animation: pop 0.3s;
+}
+
+.btn-danger {
+    background: #d40c0c;
+    color: #fff;
+    border: none;
+}
+.btn-danger:hover, .btn-danger:focus {
+    background: #7380ec;
+    color: #fff;
+    transform: scale(1.15) rotate(8deg);
+    box-shadow: 0 8px 32px 0 rgba(212, 12, 12, 0.18);
+    animation: pop 0.3s;
+}
+
+/* Pop animation */
+@keyframes pop {
+    0% { transform: scale(1) rotate(0deg);}
+    50% { transform: scale(1.2) rotate(5deg);}
+    100% { transform: scale(1.15);}
+}
+
+/* --- Card Smooth Size Animation on Add/Remove --- */
+.card {
+    transition: min-height 0.4s cubic-bezier(.4,2,.6,1), max-height 0.4s cubic-bezier(.4,2,.6,1), box-shadow 0.2s, transform 0.2s, padding 0.3s;
+    overflow: hidden;
+}
+/* Center content in expanded seat card */
+.card.expanded .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    min-height: 320px;
+    padding: 2rem 1rem;
+}
+
+.card.expanded form {
+    width: 100%;
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.card.expanded form .form-control {
+    width: 100%;
+    text-align: center;
+}
+.card.expanded {
+    min-height: 320px;
+    max-height: 600px;
+    padding-bottom: 2rem;
+    box-shadow: 0 12px 36px 0 rgba(115, 128, 236, 0.22);
+    transform: scale(1.03);
+}
+        /* Layout grid for sidebar, main, right */
+.layout-grid {
+    display: grid;
+    grid-template-columns: 14rem 1fr 5rem;
+    min-height: 100vh;
+    background: var(--clr-bg);
+}
+
+@media screen and (max-width: 1200px) {
+    .container {
+        padding-left: 7rem; /* Less padding for smaller sidebar */
+    }
+    
+    .aside {
+        width: 7rem;
+    }
+}
+@media (max-width: 900px) {
+    .layout-grid {
+        grid-template-columns: 1fr;
+    }
+    .right {
+        position: static;
+        width: 100%;
+        margin-top: 0;
+    }
+}
+
+/* Main content styling */
+main {
+    grid-column: 2 / span 1;
+    background: var(--clr-bg);
+    border-radius: var(--radius-2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
+    padding: 2.5rem 2rem 2rem 2rem;
+    margin: 2rem 0;
+    min-height: 80vh;
+    transition: background 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.main-title {
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--clr-primary-variant);
+    letter-spacing: 1px;
+}
+
+.filters-area {
+    margin-bottom: 2rem;
+}
+
+.filter-row {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.filter-row > div {
+    flex: 1 1 180px;
+    min-width: 180px;
+}
+
+.seat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 992px) {
+    .seat-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 600px) {
+    .seat-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: auto;
+    z-index: 100;
+    margin: 0.5rem 1rem;
+}
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: white;
+            color: var(--clr-dark);
+            font-size: 0.88rem;
+            overflow-x: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* === Typography === */
+        h1 {
+            font-size: 1.6rem;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+        }
+
+        h3 {
+            font-size: 0.87rem;
+        }
+
+        h4 {
+            font-size: 0.8rem;
+        }
+
+        h5 {
+            font-size: 0.77rem;
+        }
+
+        p,
+        small {
+            color: var(--clr-dark-variant);
+            text-align: justify;
+        }
+
+        b {
+            color: var(--clr-dark);
+        }
+
+        .text-muted {
+            color: var(--clr-info-dark);
+        }
+
+        .primary {
+            color: var(--clr-primary);
+        }
+
+        .success {
+            color: var(--clr-success);
+        }
+
+        .danger {
+            color: var(--clr-danger);
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .warning {
+            color: var(--clr-warning);
+        }
+
+        .rsm {
+            font-size: 0.78rem;
+            font-weight: 600;
+            margin-left: 1rem;
+            color: rgba(31, 31, 164, 0.996);
+        }
+
+        .container {
+    display: grid;
+    grid-template-columns: 14rem 1fr;
+    gap: 1.8rem;
+    margin: 0;
+    padding-left: 2rem; /* Add padding equal to sidebar width */
+    width: 100%;
+}
+
+
+        /* === Sidebar === */
+        .aside {
+    position: fixed; /* Keep fixed position */
+    height: 100vh;
+    width: 14rem; /* Match grid column width */
+    top: 0;
+    left: 0;
+    background: var(--clr-white);
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+    z-index: 100; /* Higher z-index to prevent overlapping */
+    overflow-y: auto; /* Allow scrolling within sidebar if needed */
+}
+/* === Fix spacing issues === */
+/* Reduce gap between filter row elements */
+.filter-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.8rem;
+    align-items: flex-start; /* Changed from flex-end to flex-start */
+}
+
+.filter-row > div {
+    flex: 1 1 200px;
+    min-width: 200px;
+    margin-bottom: 0.5rem;
+    display: flex;
+    flex-direction: column; /* Force vertical stacking */
+}
+
+
+/* Make form controls more compact */
+.form-select, .form-control {
+    margin-bottom: 0.5rem; /* Reduced from 1rem */
+}
+
+/* Add proper spacing after filter button */
+.text-center.mb-4 {
+    margin-bottom: 2rem !important; /* Added more space after filter button */
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(115, 128, 236, 0.1); /* Light separator */
+}
+
+/* Reduce gap in seat grid */
+.seat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem; /* Reduced from 2rem */
+    margin-bottom: 1.5rem; /* Reduced from 2rem */
+}
+
+/* Make card padding more compact */
+.card-body {
+    padding: 1.25rem; /* Reduced padding */
+}
+
+/* Add space between filter button and cards */
+.filters-area {
+    margin-bottom: 1rem; /* Reduced from 2rem */
+}
+
+/* Make main content padding more compact */
+main {
+    padding: 2rem 1.8rem 1.8rem 1.8rem; /* Reduced from 2.5rem 2rem 2rem 2rem */
+}
+.form-select, .form-control {
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+/* Make main title more compact */
+.main-title {
+    margin-bottom: 1.5rem; /* Reduced from 2rem */
+}
+.form-label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+    color: var(--clr-primary-variant);
+    width: 100%;
+}
+
+/* Better align the Available Seat checkbox */
+.form-check {
+    padding-bottom: 8px;
+    margin-bottom: 0.5rem;
+    margin-top: 1.6rem; /* Add top margin to align with other controls */
+}
+
+/* Fix padding in the filters area */
+.filters-area {
+    padding: 1.2rem; /* Reduced from 1.5rem */
+    margin-bottom: 1rem;
+}
+
+/* Add specific space after filter button before cards */
+.text-center.mb-4 + .seat-grid {
+    margin-top: 1.5rem;
+}
+        .aside .top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(164, 158, 158, 0.1);
+        }
+
+        .aside .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .aside .logo h2 {
+            font-size: 1.2rem;
+        }
+
+        .aside .top .close span {
+            display: none;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            padding-top: 1rem;
+            height: 85vh;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.5rem;
+            padding: 0.3rem;
+            color: var(--clr-dark);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--radius-1);
+            background: var(--clr-white);
+            margin-bottom: 0.1rem;
+            transition: background 0.2s, color 0.2s;
+        }
+
+
+        .sidebar a:hover {
+            background: rgba(115, 128, 236, 0.1);
+            color: var(--clr-primary);
+        }
+
+        .sidebar a.Active {
+            background: var(--clr-light);
+            border-left: 5px solid var(--clr-primary-variant);
+            color: var(--clr-primary-variant);
+        }
+
+        .sidebar a span {
+            font-size: 1.6rem;
+            transition: margin 0.2s ease;
+        }
+
+        .sidebar a:hover span {
+            margin-left: 0.25rem;
+        }
+
+        /* === About Page === */
+        .about-container {
+            background: var(--clr-white);
+            border-radius: var(--radius-2);
+            padding: var(--card-padding);
+            box-shadow: var(--shadow);
+            line-height: 1.6;
+        }
+
+        /* === Main Content === */
+/* Adjust main content area */
+main {
+    grid-column: 2 / span 1;
+    width: calc(100% - 2rem);
+    margin: 2rem 1rem;
+    position: relative;
+}
+
+        main .dashboard {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.8rem;
+            margin-top: 1rem;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            align-items: start;
+            margin-top: 1rem;
+            padding: 1rem;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            border-radius: var(--radius-2);
+            margin-top: .4rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .about-details p {
+            text-align: justify;
+            margin-bottom: 1rem;
+        }
+
+/* Update the media query for mobile */
+@media screen and (max-width: 768px) {
+    .container {
+        padding-left: 0; /* No padding on mobile */
+    }
+    
+    .aside {
+        transform: translateX(-100%); /* Hide sidebar by default on mobile */
+    }
+    
+    .aside.show {
+        transform: translateX(0);
+    }
+}
+
+
+        /* === Buttons === */
+        .action-btn {
+            margin-top: 0.8rem;
+            padding: 0.4rem 1rem;
+            border: none;
+            border-radius: var(--radius-2);
+            font-weight: 500;
+            color: white;
+            background: var(--clr-primary);
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--clr-primary-variant);
+        }
+
+        
+
+        /* === Right Panel === */
+  /* === Right Panel === */
+.right {
+    position: fixed; /* Changed from absolute to fixed */
+    top: 0;
+    right: 0;
+    width: auto;
+    z-index: 100;
+    margin: 0.5rem 1rem;
+}
+
+.right .top {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background: var(--clr-white);
+    padding: 0.5rem;
+    border-radius: var(--radius-1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    height: 3rem;
+}
+
+        .logout-btn,
+        .notification-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-top: .1rem;
+            display: flex;
+            font-size: 1rem;
+            color: var(--clr-dark);
+        }
+
+        .logout-btn:hover {
+            color: var(--clr-danger);
+        }
+
+        .theme-toggler {
+            display: flex;
+            width: 4.2rem;
+            height: 1.6rem;
+            background: var(--clr-white);
+            border-radius: var(--radius-1);
+            cursor: pointer;
+        }
+
+        .theme-toggler span {
+            width: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+        }
+
+        .theme-toggler span.active {
+            background: var(--clr-primary);
+            border-radius: var(--radius-1);
+            color: white;
+        }
+
+        .profile-photo img {
+            width: 2.4rem;
+            height: 2.4rem;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        #menu_bar {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--clr-dark);
+        }
+
+        @media screen and (max-width: 1200px) {
+            .container {
+                grid-template-columns: 7rem auto 14rem;
+            }
+
+            .sidebar h3 {
+                display: inline;
+            }
+
+            main .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            #menu_bar {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: var(--clr-dark);
+}
+
+            .aside {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 18rem;
+                transform: translateX(-100%);
+                z-index: 999;
+                height: 100vh;
+                box-shadow: 2px 0 12px rgba(0, 0, 0, 0.2);
+            }
+
+            .aside.show {
+                transform: translateX(0);
+            }
+
+            .aside .top .close span {
+                display: inline;
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+            }
+
+            .right .top {
+                position: fixed;
+                background: white;
+                top: 0;
+                left: 0;
+                width: 100%;
+                padding: 0 1rem;
+                z-index: 2;
+            }
+
+            .notification,
+            .logout-btn {
+                display: none;
+            }
+
+            main .dashboard {
+                padding-top: 4rem;
+                grid-template-columns: 1fr;
+                gap: 1.6rem;
+            }
+        }
+
+        /* === Dark Theme === */
+        body.dark-theme {
+            background: var(--clr-dark);
+            color: var(--clr-white);
+        }
+
+        body.dark-theme p,
+        body.dark-theme small,
+        body.dark-theme .text-muted {
+            color: var(--clr-info-light);
+        }
+
+        body.dark-theme .aside,
+        body.dark-theme .sidebar a {
+            background: #1e1e2f;
+            color: var(--clr-info-light);
+        }
+
+        body.dark-theme .sidebar a.Active {
+            color: var(--clr-primary);
+            border-left: 5px solid var(--clr-primary);
+        }
+
+        body.dark-theme .theme-toggler span.active {
+            background: var(--clr-white);
+            color: var(--clr-primary);
+        }
+
+        body.dark-theme .about-container {
+            background: #1e1e2f;
+            color: var(--clr-white);
+            box-shadow: 0 2rem 5rem rgba(0, 0, 0, .1);
+        }
+        @media (max-width: 1200px) {
+    main, .right {
+        grid-column: 2 / span 1;
+    }
+}
+        /* === Main Content Enhancements === */
+main {
+    grid-column: 2 / span 1;
+    background: var(--clr-bg);
+    border-radius: var(--radius-2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
+    padding: 2.5rem 2rem 2rem 2rem;
+    margin: 2rem 0;
+    min-height: 80vh;
+    transition: background 0.3s;
+}
+
+main h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--clr-primary-variant);
+    margin-bottom: 2rem;
+    letter-spacing: 1px;
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--clr-primary-variant);
+    margin-bottom: 0.5rem;
+}
+
+.form-select, .form-control {
+    border-radius: var(--radius-2);
+    border: 1.5px solid var(--clr-primary-variant);
+    background: var(--clr-white);
+    color: var(--clr-dark);
+    font-size: 1rem;
+    padding: 0.6rem 1rem;
+    margin-bottom: 1rem;
+    transition: border-color 0.2s;
+}
+
+.form-select:focus, .form-control:focus {
+    border-color: var(--clr-primary);
+    box-shadow: 0 0 0 2px var(--clr-light);
+    outline: none;
+}
+
+.form-check-input:checked {
+    background-color: var(--clr-primary);
+    border-color: var(--clr-primary-variant);
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, var(--clr-primary), var(--clr-primary-variant));
+    border: none;
+    border-radius: var(--radius-2);
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 0.6rem 2.2rem;
+    box-shadow: 0 4px 16px 0 rgba(115, 128, 236, 0.10);
+    transition: background 0.2s, transform 0.2s;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(90deg, var(--clr-primary-variant), var(--clr-primary));
+    transform: translateY(-2px) scale(1.03);
+}
+
+.seat-card .card {
+    border-radius: var(--radius-2);
+    box-shadow: 0 4px 24px 0 rgba(115, 128, 236, 0.08);
+    border: none;
+    background: var(--clr-white);
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.seat-card .card:hover {
+    box-shadow: 0 8px 32px 0 rgba(115, 128, 236, 0.18);
+    transform: translateY(-4px) scale(1.02);
+}
+
+.card-title {
+    color: var(--clr-primary-variant);
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.btn-success, .btn-danger {
+    border-radius: var(--radius-1);
+    font-weight: 600;
+    font-size: 1.2rem;
+    padding: 0.4rem 1.2rem;
+    box-shadow: 0 2px 8px 0 rgba(65, 241, 182, 0.10);
+    transition: background 0.2s, transform 0.2s;
+}
+
+.btn-success:hover {
+    background: #41f1b6;
+    color: #fff;
+    transform: scale(1.08);
+}
+
+.btn-danger:hover {
+    background: #d40c0c;
+    color: #fff;
+    transform: scale(1.08);
+}
+
+/* Grid for seat cards */
+.row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 992px) {
+    .row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 600px) {
+    .row {
+        grid-template-columns: 1fr;
+    }
+}
+.right .top button {
+    margin: 0 0.6rem; /* Add horizontal space between buttons */
+}
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <!-- Sidebar -->
+       <!-- Sidebar Section -->
+       <aside class="aside">
+        <div class="top">
+            <div class="logo">
+                <img src="images/BAUET-Logo.png" alt="Boral Hall Logo" style="width: 2.5rem; height: 2.5rem;">
+                <h2 class="danger" style="white-space: nowrap;">Boral Hall</h2>
+            </div>
+            <div class="close" title="Close Sidebar">
+                <span class="material-icons">close</span>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <a href="AdminDashboard.html"><span class="material-icons">dashboard</span>
+                <h3>Dashboard</h3>
+            </a>
+            <a href="#"><span class="material-icons">pending</span>
+                <h3>Check Request</h3>
+            </a>
+            <a href="#"><span class="material-icons">picture_as_pdf</span>
+                <h3>Add Documents</h3>
+            </a>
+            <a href="room.html" class="Active"><span class="material-icons">corporate_fare</span>
+                <h3>Room Allocation</h3>
+            </a>
+            <a href="#"><span class="material-icons">search</span>
+                <h3>Searching Student Info</h3>
+            </a>
+            <a href="#"><span class="material-icons">co_present</span>
+                <h3>Attendance Report</h3>
+            </a>
+            <a href="#"><span class="material-icons">restaurant_menu</span>
+                <h3>Meal Report</h3>
+            </a>
+            <a href="#"><span class="material-icons">report</span>
+                <h3>Check Complaints</h3>
+            </a>
+            <a href="#"><span class="material-icons">logout</span>
+                <h3>Log Out</h3>
+            </a>
+            <p class="rsm">2025©️RSM</p>
+        </div>
+    </aside>
+
+        <!-- Main Content -->
+        <main>
+            <h2 class="main-title text-center">Room Allocation System</h2>
+            <div class="filters-area">
+                <div class="filter-row">
+                    <div>
+                        <label for="floorSelect" class="form-label">Select Floor</label>
+                        <select class="form-select" id="floorSelect" name="floor">
+                            <option value="" disabled selected>Select Floor</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="roomSelect" class="form-label">Select Room Number</label>
+                        <select class="form-select" id="roomSelect" name="room">
+                            <option value="" disabled selected>Select Room</option>
+                           
+                            <option value="02">02</option>
+                            <option value="03">03</option>
+                            <option value="04">04</option>
+                            <option value="05">05</option>
+                            <option value="06">06</option>
+                            <option value="07">07</option>
+                            <option value="08">08</option>
+                            <option value="09">09</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                        </select>
+                    </div>
+        
+                    <div>
+                        <label for="departmentSelect" class="form-label">Select Department</label>
+                        <select class="form-select" id="departmentSelect" name="department">
+                            <option value="" disabled selected>Select Department</option>
+                            <option value="CSE">CSE</option>
+                            <option value="EEE">EEE</option>
+                            <option value="BBA">BBA</option>
+                            <option value="CE">CE</option>
+                            <option value="ME">ME</option>
+                            <option value="ENG">ENG</option>
+                            <option value="LAW">LAW</option>
+                            <option value="ICE">ICE</option>
+                            
+                        </select>
+                    </div>
+                    <div class="form-check" style="align-self: end;">
+                        <input class="form-check-input" type="checkbox" id="availableSeat" name="availableSeat">
+                        <label class="form-check-label" for="availableSeat">Available Seat</label>
+                    </div>
+                </div>
+        
+             
+                <div class="text-center mb-4">
+                    <button type="button" class="btn btn-primary">Filter</button>
+                </div>
+                <!-- Six Cards -->
+                <div class="seat-grid">
+                    <!-- Seat 1 -->
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Seat 1</h5>
+                                <div id="seat1">
+                                    <button class="btn btn-success" onclick="addPerson(1)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- Seat 2 -->
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Seat 2</h5>
+                                <div id="seat2">
+                                    <button class="btn btn-success" onclick="addPerson(2)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- Seat 3 -->
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Seat 3</h5>
+                                <div id="seat3">
+                                    <button class="btn btn-success" onclick="addPerson(3)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- Seat 4 -->
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Seat 4</h5>
+                                <div id="seat4">
+                                    <button class="btn btn-success" onclick="addPerson(4)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- Seat 5 -->
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Seat 5</h5>
+                                <div id="seat5">
+                                    <button class="btn btn-success" onclick="addPerson(5)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- Seat 6 -->
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Seat 6</h5>
+                                <div id="seat6">
+                                    <button class="btn btn-success" onclick="addPerson(6)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        
+            <script>
+                function addPerson(seatNumber) {
+                    const seatDiv = document.getElementById(`seat${seatNumber}`);
+                    const card = seatDiv.closest('.card');
+                    if(card) card.classList.add('expanded');
+                    seatDiv.innerHTML = `
+                        <form>
+                            <div class="mb-2">
+                                <input type="text" class="form-control" placeholder="Name" name="name">
+                            </div>
+                            <div class="mb-2">
+                                <input type="text" class="form-control" placeholder="ID" name="id">
+                            </div>
+                            <div class="mb-2">
+                                <input type="text" class="form-control" placeholder="Department" name="department">
+                            </div>
+                            <div class="mb-2">
+                                <input type="text" class="form-control" placeholder="Batch" name="batch">
+                            </div>
+                            <button type="button" class="btn btn-danger" onclick="removePerson(${seatNumber})">-</button>
+                        </form>
+                    `;
+                }
+        
+                function removePerson(seatNumber) {
+                    const seatDiv = document.getElementById(`seat${seatNumber}`);
+                    const card = seatDiv.closest('.card');
+                    if(card) card.classList.remove('expanded');
+                    seatDiv.innerHTML = `
+                        <button class="btn btn-success" onclick="addPerson(${seatNumber})">+</button>
+                    `;
+                }
+            </script>
+            <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+        </main>
+
+        <!-- Right Panel -->
+      <!-- Replace the Right Panel section with this updated version -->
+
+<!-- Right Panel -->
+<div class="right">
+    <div class="top">
+        <!-- Mobile Menu Button -->
+        <button id="menu_bar" type="button">
+            <span class="material-icons">menu</span>
+        </button>
+
+        <button class="notification-btn" title="Notifications" type="button">
+            <span class="material-icons">notifications</span>
+        </button>
+
+        <button class="logout-btn" title="Logout" type="button">
+            <span class="material-icons">logout</span>
+        </button>
+
+        <div class="profile">
+            <div class="profile-photo" title="Profile">
+                <img src="assets/img/profile-user.png" alt="Profile Photo" />
+            </div>
+        </div>
+    </div>
+</div>
+
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const menuBtn = document.getElementById('menu_bar');
+            const sidebar = document.querySelector('.aside');
+            const closeBtn = document.querySelector('.close span');
+
+            // Mobile menu open
+            if (menuBtn && sidebar) {
+                menuBtn.addEventListener('click', () => {
+                    sidebar.classList.add('show');
+                });
+            }
+
+            // Mobile menu close
+            if (closeBtn && sidebar) {
+                closeBtn.addEventListener('click', () => {
+                    sidebar.classList.remove('show');
+                });
+            }
+        });
+    </script>
+    // Add this script at the end of your room.html file, just before the closing </body> tag
+
+    <script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getFirestore, collection, doc, getDoc, getDocs, setDoc, query, where } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    
+    // Firebase configuration (same as in profile.html)
+    const firebaseConfig = {
+        apiKey: "AIzaSyBF-nMMW5lG44JfHxx4HxCbf5N81geOiRs",
+        authDomain: "bauet-hms-63f5b.firebaseapp.com",
+        databaseURL: "https://bauet-hms-63f5b-default-rtdb.firebaseio.com",
+        projectId: "bauet-hms-63f5b",
+        storageBucket: "bauet-hms-63f5b.appspot.com",
+        messagingSenderId: "200038506273",
+        appId: "1:200038506273:web:2e141fc9ec36de049ae860"
+    };
+    
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    
+    // Global variables to track current room
+    let currentFloor = "";
+    let currentRoom = "";
+    let hasChanges = false;
+    
+    // Function to handle filter button click
+    document.querySelector('.btn-primary').addEventListener('click', async function() {
+        // Get selected values
+        const floor = document.getElementById('floorSelect').value;
+        const room = document.getElementById('roomSelect').value;
+        const department = document.getElementById('departmentSelect').value;
+        const availableSeatOnly = document.getElementById('availableSeat').checked;
+        
+        // Validate at least floor and room are selected
+        if (!floor || !room) {
+            alert("Please select both floor and room number");
+            return;
+        }
+        
+        // Reset tracking variables
+        currentFloor = floor;
+        currentRoom = room;
+        hasChanges = false;
+        
+        try {
+            // Create room document ID (e.g., "101" for floor 1, room 01)
+            const roomId = `${floor}${room}`;
+            
+            // Reference to the room document
+            const roomDocRef = doc(db, "room", roomId);
+            const roomDoc = await getDoc(roomDocRef);
+            
+            // Check if room exists in Firestore
+            let membersExist = false;
+            if (roomDoc.exists()) {
+                // Reference to the room's members collection
+                const membersCollectionRef = collection(roomDocRef, "members");
+                const membersSnapshot = await getDocs(membersCollectionRef);
+                membersExist = !membersSnapshot.empty;
+            }
+            
+            // Clear all seats first
+            for (let i = 1; i <= 6; i++) {
+                removePerson(i);
+            }
+            
+            if (membersExist) {
+                // Fetch each seat document
+                for (let seatNum = 1; seatNum <= 6; seatNum++) {
+                    const seatId = `seat${seatNum}`;
+                    const seatDocRef = doc(db, "room", roomId, "members", seatId);
+                    const seatDoc = await getDoc(seatDocRef);
+                    
+                    if (seatDoc.exists()) {
+                        const studentData = seatDoc.data();
+                        
+                        // If department filter is applied, check if student matches
+                        if (!department || studentData.department === department) {
+                            populateSeat(seatNum, studentData);
+                        }
+                    }
+                }
+            }
+            
+            // If available seat only is checked, count empty seats
+            if (availableSeatOnly) {
+                let emptySeats = 0;
+                for (let i = 1; i <= 6; i++) {
+                    const seatDiv = document.getElementById(`seat${i}`);
+                    if (!seatDiv.querySelector('form')) {
+                        emptySeats++;
+                    }
+                }
+                
+                if (emptySeats > 0) {
+                    alert(`Room ${floor}${room} has ${emptySeats} available seats`);
+                } else {
+                    alert(`Room ${floor}${room} has no available seats`);
+                }
+            }
+            
+        } catch (error) {
+            console.error("Error fetching room data:", error);
+            alert("Failed to fetch room data. Please try again.");
+        }
+    });
+    
+    // Function to populate a seat with student data
+    function populateSeat(seatNumber, studentData) {
+        const seatDiv = document.getElementById(`seat${seatNumber}`);
+        const card = seatDiv.closest('.card');
+        if(card) card.classList.add('expanded');
+        
+        seatDiv.innerHTML = `
+            <form>
+                <div class="mb-2">
+                    <input type="text" class="form-control" placeholder="Name" name="name" value="${studentData.name || ''}">
+                </div>
+                <div class="mb-2">
+                    <input type="text" class="form-control" placeholder="ID" name="id" value="${studentData.id || ''}">
+                </div>
+                <div class="mb-2">
+                    <input type="text" class="form-control" placeholder="Department" name="department" value="${studentData.department || ''}">
+                </div>
+                <div class="mb-2">
+                    <input type="text" class="form-control" placeholder="Batch" name="batch" value="${studentData.batch || ''}">
+                </div>
+                <button type="button" class="btn btn-danger" onclick="removePerson(${seatNumber})">-</button>
+            </form>
+        `;
+        
+        // Add change event listeners to track modifications
+        const inputFields = seatDiv.querySelectorAll('input');
+        inputFields.forEach(input => {
+            input.addEventListener('change', function() {
+                hasChanges = true;
+            });
+        });
+    }
+    
+    // Override the global addPerson function
+    window.addPerson = function(seatNumber) {
+        const seatDiv = document.getElementById(`seat${seatNumber}`);
+        const card = seatDiv.closest('.card');
+        if(card) card.classList.add('expanded');
+        
+        seatDiv.innerHTML = `
+            <form>
+                <div class="mb-2">
+                    <input type="text" class="form-control" placeholder="Name" name="name">
+                </div>
+                <div class="mb-2">
+                    <input type="text" class="form-control" placeholder="ID" name="id">
+                </div>
+                <div class="mb-2">
+                    <input type="text" class="form-control" placeholder="Department" name="department">
+                </div>
+                <div class="mb-2">
+                    <input type="text" class="form-control" placeholder="Batch" name="batch">
+                </div>
+                <button type="button" class="btn btn-danger" onclick="removePerson(${seatNumber})">-</button>
+            </form>
+        `;
+        
+        // Mark that changes were made
+        hasChanges = true;
+        
+        // Add change event listeners
+        const inputFields = seatDiv.querySelectorAll('input');
+        inputFields.forEach(input => {
+            input.addEventListener('change', function() {
+                hasChanges = true;
+            });
+        });
+    };
+    
+    // Override the global removePerson function
+    window.removePerson = function(seatNumber) {
+        const seatDiv = document.getElementById(`seat${seatNumber}`);
+        const card = seatDiv.closest('.card');
+        
+        // Check if this seat has student data before removing
+        const form = seatDiv.querySelector('form');
+        if (form) {
+            hasChanges = true;
+        }
+        
+        if(card) card.classList.remove('expanded');
+        seatDiv.innerHTML = `
+            <button class="btn btn-success" onclick="addPerson(${seatNumber})">+</button>
+        `;
+    };
+    
+    // Handle Submit button click
+    document.querySelector('.mt-4 .btn-primary').addEventListener('click', async function() {
+        // Validate if a room is selected
+        if (!currentFloor || !currentRoom) {
+            alert("Please filter a room first before submitting changes");
+            return;
+        }
+        
+        // If no changes were made, no need to save
+        if (!hasChanges) {
+            alert("No changes detected");
+            return;
+        }
+        
+        try {
+            // Create room document ID (e.g., "101" for floor 1, room 01)
+            const roomId = `${currentFloor}${currentRoom}`;
+            
+            // Get data from all seats
+            const seatUpdates = [];
+            
+            for (let seatNum = 1; seatNum <= 6; seatNum++) {
+                const seatDiv = document.getElementById(`seat${seatNum}`);
+                const form = seatDiv.querySelector('form');
+                const seatId = `seat${seatNum}`;
+                
+                if (form) {
+                    // Seat has data to save
+                    const nameInput = form.querySelector('input[name="name"]');
+                    const idInput = form.querySelector('input[name="id"]');
+                    const departmentInput = form.querySelector('input[name="department"]');
+                    const batchInput = form.querySelector('input[name="batch"]');
+                    
+                    // Create student data object
+                    const studentData = {
+                        name: nameInput ? nameInput.value.trim() : '',
+                        id: idInput ? idInput.value.trim() : '',
+                        department: departmentInput ? departmentInput.value.trim() : '',
+                        batch: batchInput ? batchInput.value.trim() : ''
+                    };
+                    
+                    // Validate required fields
+                    if (!studentData.id) {
+                        alert(`Please enter ID for Seat ${seatNum}`);
+                        return;
+                    }
+                    
+                    // Add to update queue
+                    seatUpdates.push({
+                        seatId,
+                        data: studentData,
+                        isEmpty: false
+                    });
+                } else {
+                    // Seat is empty
+                    seatUpdates.push({
+                        seatId,
+                        isEmpty: true
+                    });
+                }
+            }
+            
+            // First ensure the room document exists
+            await setDoc(doc(db, "room", roomId), {
+                floor: currentFloor,
+                roomNumber: currentRoom,
+                lastUpdated: new Date()
+            }, { merge: true });
+            
+            // Process all seat updates
+            for (const update of seatUpdates) {
+                const seatDocRef = doc(db, "room", roomId, "members", update.seatId);
+                
+                if (update.isEmpty) {
+                    // If the seat is empty in the UI, we'll just set it to an empty object
+                    // This keeps the document but clears the data
+                    await setDoc(seatDocRef, {
+                        name: "",
+                        id: "",
+                        department: "",
+                        batch: "",
+                        isEmpty: true
+                    });
+                } else {
+                    // Save the student data
+                    await setDoc(seatDocRef, {
+                        ...update.data,
+                        isEmpty: false,
+                        lastUpdated: new Date()
+                    });
+                }
+            }
+            
+            alert("Room data saved successfully!");
+            hasChanges = false;
+            
+        } catch (error) {
+            console.error("Error saving room data:", error);
+            alert("Failed to save room data: " + error.message);
+        }
+    });
+    </script>
+</body>
+
+</html>
