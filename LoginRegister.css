@@ -1,0 +1,182 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    background: linear-gradient(to right, rgba(226, 226, 226, 0.6), rgba(201, 214, 255, 0.6)),
+        url(https://bauet.ac.bd/wp-content/uploads/2020/11/Hostel.jpg) no-repeat center center fixed;
+    background-size: cover;
+}
+
+.container {
+    background: white;
+    width: 360px;
+    padding: 2.5rem;
+    margin: 50px auto;
+    border-radius: 25px;
+    box-shadow: 0 20px 35px rgba(1, 25, 0, 0.671);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo {
+    width: 3.3rem;
+    height: 3.3rem;
+    border-radius: 50%;
+}
+
+.title {
+    font-size: 3.8rem;
+    font-weight: bold;
+    color: hsl(115, 90%, 16%);
+}
+
+form {
+    margin: 0 1rem;
+}
+
+.form-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 1rem;
+    padding: 1.3rem;
+    margin-bottom: 0.4rem;
+}
+
+.input-group {
+    padding: 1% 0;
+    position: relative;
+}
+
+.input-group i.fa-lock,
+.input-group i.fa-envelope,
+.input-group i.fa-user,
+.input-group i.fa-phone,
+.input-group i.fa-calendar,
+.input-group i.fa-map-marker-alt {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    color: black;
+}
+
+input,
+select {
+    color: inherit;
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #757575;
+    padding-left: 1.5rem;
+    font-size: 15px;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-bottom: 2px solid hsl(327, 90%, 28%);
+}
+
+input::placeholder {
+    color: transparent;
+}
+
+label {
+    color: #6a6969;
+    position: relative;
+    left: 1.2em;
+    top: -1.3em;
+    cursor: auto;
+    transition: 0.3s ease all;
+    pointer-events: none;
+}
+
+input:focus~label,
+input:not(:placeholder-shown)~label,
+select:focus~label,
+select:not(:invalid)~label {
+    top: -3em;
+    color: hsl(327, 90%, 28%);
+    font-size: 15px;
+}
+
+.recover {
+    text-align: center;
+    font-weight: 400;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.recover a {
+    text-decoration: none;
+    font-weight: bold;
+    color: rgb(193, 21, 18);
+}
+
+.recover a:hover {
+    color: rgb(173, 27, 27);
+    text-decoration: underline;
+}
+
+.btn {
+    font-size: 1.1rem;
+    padding: 8px 0;
+    border-radius: 5px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    outline: none;
+    border: none;
+    width: 100%;
+    background: rgba(9, 76, 184, 0.902);
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #014a18;
+}
+
+.links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    flex-wrap: wrap;
+}
+
+.links .button {
+    color: rgb(35, 35, 234);
+    background: transparent;
+    border: none;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.links .button:hover {
+    text-decoration: underline;
+    color: blue;
+}
+
+.toggle-password {
+    position: absolute;
+    top: 10px;
+    right: 0;
+    right: 1px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: black;
+}

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Boral Hall</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="shortcut icon" href="images/BAUET-Logo.png" type="image/x-icon">
+
+    <link rel="stylesheet" href="AdminDashboard.css">
+</head>
+
+<body>
+    <div class="container">
+
+        <aside class="aside">
+            <div class="top">
+                <div class="logo">
+                    <img src="images/BAUET-Logo.png" alt="Boral Hall Logo" style="width: 2.5rem; height: 2.5rem;">
+                    <h2 class="danger" style="white-space: nowrap;">Boral Hall</h2>
+                </div>
+                <div class="close" title="Close Sidebar">
+                    <span class="material-icons">close</span>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <a href="#" class="active"><span class="material-icons">dashboard</span>
+                    <h3>Dashboard</h3>
+                </a>
+                <a href="#"><span class="material-icons">pending</span>
+                    <h3>Check Request</h3>
+                </a>
+                <a href="#"><span class="material-icons">picture_as_pdf</span>
+                    <h3>Add Documents</h3>
+                </a>
+                <a href="#"><span class="material-icons">corporate_fare</span>
+                    <h3>Room Allocation</h3>
+                </a>
+                <a href="#"><span class="material-icons">search</span>
+                    <h3>Searching Student Info</h3>
+                </a>
+                <a href="#"><span class="material-icons">co_present</span>
+                    <h3>Attendance Report</h3>
+                </a>
+                <a href="#"><span class="material-icons">restaurant_menu</span>
+                    <h3>Meal Report</h3>
+                </a>
+                <a href="#"><span class="material-icons">report</span>
+                    <h3>Check Complaints</h3>
+                </a>
+                <a href="#"><span class="material-icons">logout</span>
+                    <h3>Log Out</h3>
+                </a>
+                <p class="rsm">2025©️RSM</p>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <h1>Admin Dashboard</h1>
+            <div class="dashboard">
+
+                <div class="card request">
+                    <span class="material-icons card-icon">payments</span>
+                    <div class="section-info">
+                        <h2>Check Request</h2>
+                        <p>Check and approve new student requests</p>
+                        <button class="action-btn">View</button>
+                    </div>
+                </div>
+
+                <div class="card attendance">
+                    <span class="material-icons card-icon">co_present</span>
+                    <div class="section-info">
+                        <h2>Check Attendance Report</h2>
+                        <p>Daily present and absent report</p>
+                        <button class="action-btn">Check</button>
+                    </div>
+                </div>
+
+                <div class="card allocation">
+                    <span class="material-icons card-icon">hotel</span>
+                    <div class="section-info">
+                        <h2>Room Allocation</h2>
+                        <p>Roomwise allocation system</p>
+                        <button class="action-btn">Allocate</button>
+                    </div>
+                </div>
+
+                <div class="card meal">
+                    <span class="material-icons card-icon">restaurant_menu</span>
+                    <div class="section-info">
+                        <h2>Meal Report</h2>
+                        <p>Check meal report and manage meals</p>
+                        <button class="action-btn">View</button>
+                    </div>
+                </div>
+
+                <div class="card student_info">
+                    <span class="material-icons card-icon">search</span>
+                    <div class="section-info">
+                        <h2>Search Student Information</h2>
+                        <p>Search student info by ID or name</p>
+                        <button class="action-btn">Search</button>
+                    </div>
+                </div>
+
+                <div class="card complaint">
+                    <span class="material-icons card-icon">report</span>
+                    <div class="section-info">
+                        <h2>Check Complaints</h2>
+                        <p>Check residential student complaints</p>
+                        <button class="action-btn">Check</button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <div class="right">
+            <div class="top">
+                
+                <button id="menu_bar" title="Menu">
+                    <span class="material-icons">menu</span>
+                </button>
+
+                <button class="notification-btn" title="Notifications">
+                    <span class="material-icons">notifications</span>
+                </button>
+
+                <button class="logout-btn" title="Logout">
+                    <span class="material-icons">logout</span>
+                </button>
+
+                <div class="theme-toggler">
+                    <span class="material-icons light-icon active" title="Switch to Dark Mode">light_mode</span>
+                    <span class="material-icons dark-icon" title="Switch to Light Mode">dark_mode</span>
+                </div>
+                <div class="profile">
+                    <div class="profile-photo" title="Profile">
+                        <img src="images/Mueid.png" alt="Profile Photo">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="AdminDashboard.js"></script>
+</body>
+</html>
