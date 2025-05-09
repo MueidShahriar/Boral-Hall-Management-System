@@ -302,29 +302,6 @@ main .dashboard {
     color: var(--clr-danger);
 }
 
-.theme-toggler {
-    display: flex;
-    width: 4.2rem;
-    height: 1.6rem;
-    background: var(--clr-white);
-    border-radius: var(--radius-1);
-    cursor: pointer;
-}
-
-.theme-toggler span {
-    width: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.2rem;
-}
-
-.theme-toggler span.active {
-    background: var(--clr-primary);
-    border-radius: var(--radius-1);
-    color: white;
-}
-
 .profile-photo img {
     width: 2.4rem;
     height: 2.4rem;
