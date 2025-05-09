@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <div class="mb-3">
+                <label for="studentId" class="form-label">Student ID</label>
+                <input type="text" class="form-control" id="studentId" name="studentId" placeholder="Enter your Student ID" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+            <div class="text-center mt-3">
+                <a href="/forgot-password" class="text-decoration-none">Forgot Password?</a>
+            </div>
+            <div class="text-center mt-2">
+                <a href="/register" class="text-decoration-none">Don't have an account? Register</a>
+            </div>
+        </form>
+    </div>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBF-nMMW5lG44JfHxx4HxCbf5N81geOiRs",
+            authDomain: "bauet-hms-63f5b.firebaseapp.com",
+            databaseURL: "https://bauet-hms-63f5b-default-rtdb.firebaseio.com",
+            projectId: "bauet-hms-63f5b",
+            storageBucket: "bauet-hms-63f5b.appspot.com",
+            messagingSenderId: "200038506273",
+            appId: "1:200038506273:web:2e141fc9ec36de049ae860"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig); // Ensure this is called first
+        const auth = getAuth(app); // Pass the app instance to getAuth
+        const database = getDatabase(app); // Pass the app instance to getDatabase
+
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const studentId = document.getElementById('studentId').value;
+            const password = document.getElementById('password').value;
+
+            // Check the email and role associated with the student ID in the database
+            const dbRef = ref(database);
+            get(child(dbRef, `users/${studentId}`)) // Corrected the path to use studentId
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const email = snapshot.val().email; // Get the email from the database
+                        const role = snapshot.val().role; // Get the role from the database (e.g., 'member' or 'admin')
+
+                        // Authenticate with email and password
+                        signInWithEmailAndPassword(auth, email, password)
+                            .then((userCredential) => {
+                                const user = userCredential.user;
+
+                                if (role === 'admin') {
+                                window.location.href = `complaints.html?id=${studentId}`; // Redirect to admin dashboard
+                            } else if (role === 'member') {
+                                window.location.href = `profile.html?id=${studentId}`; // Redirect to member dashboard
+                            } else {
+                                alert("Invalid role assigned to this account.");
+                            }
+                            })
+                            .catch((error) => {
+                                alert("Authentication Error: " + error.message);
+                            });
+                    } else {
+                        alert("Student ID not found in the database.");
+                    }
+                })
+                .catch((error) => {
+                    alert("Database Error: " + error.message);
+                });
+        });
+        
+    </script>
+</body>
+
+</html>
