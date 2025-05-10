@@ -1062,225 +1062,907 @@
             }
         });
     </script>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-        import { getFirestore, collection, doc, getDoc, getDocs, setDoc, query, where } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-        import { getAuth } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-        const firebaseConfig = {
-            apiKey: "AIzaSyBF-nMMW5lG44JfHxx4HxCbf5N81geOiRs",
-            authDomain: "bauet-hms-63f5b.firebaseapp.com",
-            databaseURL: "https://bauet-hms-63f5b-default-rtdb.firebaseio.com",
-            projectId: "bauet-hms-63f5b",
-            storageBucket: "bauet-hms-63f5b.appspot.com",
-            messagingSenderId: "200038506273",
-            appId: "1:200038506273:web:2e141fc9ec36de049ae860"
-        };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        let currentFloor = "";
-        let currentRoom = "";
-        let hasChanges = false;
-        document.querySelector('.btn-primary').addEventListener('click', async function () {
-            const floor = document.getElementById('floorSelect').value;
-            const room = document.getElementById('roomSelect').value;
-            const department = document.getElementById('departmentSelect').value;
-            const availableSeatOnly = document.getElementById('availableSeat').checked;
-            if (!floor || !room) {
-                alert("Please select both floor and room number");
-                return;
+   <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getFirestore, collection, doc, getDoc, getDocs, setDoc, query, where,writeBatch } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    
+    const firebaseConfig = {
+        apiKey: "AIzaSyBF-nMMW5lG44JfHxx4HxCbf5N81geOiRs",
+        authDomain: "bauet-hms-63f5b.firebaseapp.com",
+        databaseURL: "https://bauet-hms-63f5b-default-rtdb.firebaseio.com",
+        projectId: "bauet-hms-63f5b",
+        storageBucket: "bauet-hms-63f5b.appspot.com",
+        messagingSenderId: "200038506273",
+        appId: "1:200038506273:web:2e141fc9ec36de049ae860"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    
+    let currentFloor = "";
+    let currentRoom = "";
+    let hasChanges = false;
+    let roomData = null;  // Store room data for reuse
+    
+    // Remove the checkbox from HTML
+    const availableSeatCheckbox = document.querySelector('.form-check');
+    if (availableSeatCheckbox) {
+        availableSeatCheckbox.remove();
+    }
+    
+    // Create a section for Room Availability at the end of the page
+    const main = document.querySelector('main');
+    
+    // Create room availability toggle button
+    const roomInfoToggleBtn = document.createElement('button');
+    roomInfoToggleBtn.className = 'btn btn-primary mt-4';
+    roomInfoToggleBtn.style.display = 'block';
+    roomInfoToggleBtn.style.margin = '2rem auto 1rem auto';
+    roomInfoToggleBtn.textContent = 'Show Room Availability Status';
+    roomInfoToggleBtn.id = 'roomInfoToggle';
+    main.appendChild(roomInfoToggleBtn);
+    
+    // Create room availability section
+    const roomInfoSection = document.createElement('div');
+    roomInfoSection.id = 'roomInfoDisplay';
+    roomInfoSection.style.margin = '1rem 0 2rem 0';
+    roomInfoSection.style.display = 'none'; // Initially hidden
+    roomInfoSection.style.padding = '1.5rem';
+    roomInfoSection.style.backgroundColor = '#ffffff';
+    roomInfoSection.style.borderRadius = '0.5rem';
+    roomInfoSection.style.boxShadow = '0 4px 24px 0 rgba(115, 128, 236, 0.1)';
+    main.appendChild(roomInfoSection);
+    
+    // Add event listener to toggle button
+    roomInfoToggleBtn.addEventListener('click', () => {
+        if (roomInfoSection.style.display === 'none') {
+            roomInfoSection.style.display = 'block';
+            roomInfoToggleBtn.textContent = 'Hide Room Availability Status';
+            // Load room availability data if not already loaded
+            if (!roomData) {
+                loadRoomAvailability();
             }
+        } else {
+            roomInfoSection.style.display = 'none';
+            roomInfoToggleBtn.textContent = 'Show Room Availability Status';
+        }
+    });
+    
+    // Display loading message initially in hidden section
+    roomInfoSection.innerHTML = `
+        <h3 style="color:#7380ec;margin-bottom:0.5rem;">Room Availability Status</h3>
+        <p>Click the button above to load room information.</p>
+    `;
+    
+    // Cache for room existence and seat status to reduce Firebase calls
+    const roomExistsCache = {};
+    const roomSeatStatusCache = {};
+    
+    // Performance optimization: Batch-check room existence
+    async function checkRoomExists(roomId) {
+        if (roomExistsCache[roomId] !== undefined) {
+            return roomExistsCache[roomId];
+        }
+        
+        const roomDocRef = doc(db, "room", roomId);
+        const roomDoc = await getDoc(roomDocRef);
+        const exists = roomDoc.exists();
+        roomExistsCache[roomId] = exists;
+        return exists;
+    }
+    
+    // Performance optimization: Cache room seat status
+    async function getRoomSeatStatus(roomId) {
+        if (roomSeatStatusCache[roomId] !== undefined) {
+            return roomSeatStatusCache[roomId];
+        }
+        
+        try {
+            const roomDocRef = doc(db, "room", roomId);
+            const membersCollectionRef = collection(roomDocRef, "members");
+            const membersSnapshot = await getDocs(membersCollectionRef);
+            
+            let availableSeats = 0;
+            let occupiedSeats = 0;
+            let totalSeats = 0;
+            let studentDetails = [];
+            
+            membersSnapshot.forEach(doc => {
+                totalSeats++;
+                const data = doc.data();
+                if (data.isEmpty === true) {
+                    availableSeats++;
+                } else {
+                    occupiedSeats++;
+                    // Collect student details for detailed view
+                    studentDetails.push({
+                        seat: doc.id,
+                        name: data.name || "",
+                        id: data.id || "",
+                        department: data.department || "",
+                        batch: data.batch || ""
+                    });
+                }
+            });
+            
+            // If no members found, all seats are available
+            if (totalSeats === 0) {
+                const result = { availableSeats: 6, occupiedSeats: 0, totalSeats: 6, studentDetails: [] };
+                roomSeatStatusCache[roomId] = result;
+                return result;
+            }
+            
+            const result = { availableSeats, occupiedSeats, totalSeats, studentDetails };
+            roomSeatStatusCache[roomId] = result;
+            return result;
+        } catch (error) {
+            console.error("Error counting available seats:", error);
+            return { availableSeats: 0, occupiedSeats: 0, totalSeats: 0, studentDetails: [] };
+        }
+    }
+    
+    // Function to get department count in a room
+    async function getDepartmentCount(roomId, department) {
+        try {
+            // Use cached seat status if available
+            if (roomSeatStatusCache[roomId]) {
+                const cache = roomSeatStatusCache[roomId];
+                return cache.studentDetails.filter(student => 
+                    student.department.toLowerCase() === department.toLowerCase()
+                ).length;
+            }
+            
+            const roomDocRef = doc(db, "room", roomId);
+            const membersCollectionRef = collection(roomDocRef, "members");
+            const membersSnapshot = await getDocs(membersCollectionRef);
+            
+            let departmentCount = 0;
+            
+            membersSnapshot.forEach(doc => {
+                const data = doc.data();
+                if (data.department && data.department.toLowerCase() === department.toLowerCase() && !data.isEmpty) {
+                    departmentCount++;
+                }
+            });
+            
+            return departmentCount;
+        } catch (error) {
+            console.error("Error counting department members:", error);
+            return 0;
+        }
+    }
+    
+    // Function to load room availability - called when button is clicked
+    async function loadRoomAvailability() {
+        // Only load if not already loaded
+        if (roomData) {
+            displayRoomAvailability(
+                roomData.availableRooms,
+                roomData.fullyOccupiedRooms,
+                roomData.nonExistentRooms,
+                roomData.totalStats
+            );
+            return;
+        }
+        
+        roomInfoSection.innerHTML = `
+            <h3 style="color:#7380ec;margin-bottom:0.5rem;">Room Availability Status</h3>
+            <p>Loading room information... Please wait.</p>
+            <div style="width:100%;height:6px;background:#f0f0f0;border-radius:3px;margin-top:0.5rem;overflow:hidden;">
+                <div id="loadingBar" style="width:0%;height:100%;background:#7380ec;border-radius:3px;transition:width 0.3s;"></div>
+            </div>
+        `;
+        
+        try {
+            roomData = await getRoomAvailability();
+            displayRoomAvailability(
+                roomData.availableRooms,
+                roomData.fullyOccupiedRooms,
+                roomData.nonExistentRooms,
+                roomData.totalStats
+            );
+        } catch (error) {
+            console.error("Error loading room data:", error);
+            roomInfoSection.innerHTML = `
+                <h3 style="color:#7380ec;margin-bottom:0.5rem;">Room Availability Status</h3>
+                <p style="color:#dc3545;">Error loading room data. Please try again.</p>
+                <button class="btn btn-sm btn-outline-primary mt-2" onclick="document.getElementById('roomInfoToggle').click(); setTimeout(() => document.getElementById('roomInfoToggle').click(), 100);">Retry</button>
+            `;
+        }
+    }
+    
+    // Function to get all room information with chunking for better UX
+    async function getRoomAvailability() {
+        const availableRooms = [];
+        const fullyOccupiedRooms = [];
+        const nonExistentRooms = [];
+        
+        // All student data for detailed view
+        const allStudents = [];
+        
+        // Total counters
+        let totalOccupiedSeats = 0;
+        let totalAvailableSeats = 0;
+        
+        // Get all floors and rooms from the dropdowns
+        const floors = Array.from(document.getElementById('floorSelect').options)
+            .filter(option => option.value)
+            .map(option => option.value);
+            
+        const rooms = Array.from(document.getElementById('roomSelect').options)
+            .filter(option => option.value)
+            .map(option => option.value);
+        
+        // Create combined list of all possible rooms
+        const allPossibleRooms = [];
+        for (const floor of floors) {
+            for (const room of rooms) {
+                allPossibleRooms.push({ floor, room });
+            }
+        }
+        
+        // Calculate chunk size (process rooms in batches for better UX)
+        const totalRooms = allPossibleRooms.length;
+        const chunkSize = 10; // Process 10 rooms at a time
+        
+        // Process rooms in chunks
+        for (let i = 0; i < allPossibleRooms.length; i += chunkSize) {
+            const chunk = allPossibleRooms.slice(i, i + chunkSize);
+            
+            // Process all rooms in current chunk in parallel
+            const chunkPromises = chunk.map(async ({ floor, room }) => {
+                const roomId = `${floor}${room}`;
+                const exists = await checkRoomExists(roomId);
+                
+                if (exists) {
+                    const seatStatus = await getRoomSeatStatus(roomId);
+                    
+                    // Update global counters
+                    totalOccupiedSeats += seatStatus.occupiedSeats;
+                    totalAvailableSeats += seatStatus.availableSeats;
+                    
+                    // Add student details to all students array
+                    seatStatus.studentDetails.forEach(student => {
+                        allStudents.push({
+                            ...student,
+                            room: roomId,
+                            floor: floor,
+                            roomNumber: room
+                        });
+                    });
+                    
+                    if (seatStatus.availableSeats > 0) {
+                        return {
+                            type: 'available',
+                            roomId,
+                            floor,
+                            room,
+                            availableSeats: seatStatus.availableSeats,
+                            occupiedSeats: seatStatus.occupiedSeats,
+                            totalSeats: seatStatus.totalSeats
+                        };
+                    } else {
+                        return {
+                            type: 'occupied',
+                            roomId,
+                            floor,
+                            room,
+                            occupiedSeats: seatStatus.occupiedSeats,
+                            totalSeats: seatStatus.totalSeats
+                        };
+                    }
+                } else {
+                    // Non-existent rooms also count as available (with 6 seats)
+                    totalAvailableSeats += 6;
+                    
+                    return {
+                        type: 'nonexistent',
+                        roomId,
+                        floor,
+                        room
+                    };
+                }
+            });
+            
+            const results = await Promise.all(chunkPromises);
+            
+            // Sort results into appropriate arrays
+            results.forEach(result => {
+                if (result.type === 'available') {
+                    availableRooms.push(result);
+                } else if (result.type === 'occupied') {
+                    fullyOccupiedRooms.push(result);
+                } else if (result.type === 'nonexistent') {
+                    nonExistentRooms.push(result);
+                }
+            });
+            
+            // Update progress bar
+            const progressPercent = Math.min(100, Math.round(((i + chunk.length) / totalRooms) * 100));
+            const loadingBar = document.getElementById('loadingBar');
+            if (loadingBar) {
+                loadingBar.style.width = `${progressPercent}%`;
+            }
+        }
+        
+        // Sort rooms by floor and room number
+        const sortRooms = (a, b) => {
+            if (a.floor !== b.floor) {
+                return parseInt(a.floor) - parseInt(b.floor);
+            }
+            return parseInt(a.room) - parseInt(b.room);
+        };
+        
+        availableRooms.sort(sortRooms);
+        fullyOccupiedRooms.sort(sortRooms);
+        nonExistentRooms.sort(sortRooms);
+        
+        return { 
+            availableRooms, 
+            fullyOccupiedRooms, 
+            nonExistentRooms, 
+            allStudents,
+            totalStats: {
+                totalOccupiedSeats,
+                totalAvailableSeats
+            }
+        };
+    }
+    
+    // Function to display room availability information
+    function displayRoomAvailability(availableRooms, fullyOccupiedRooms, nonExistentRooms, totalStats) {
+        let html = `<h3 style="color:#7380ec;margin-bottom:0.5rem;">Room Availability Status</h3>`;
+        
+        // Summary stats
+        const totalRooms = availableRooms.length + fullyOccupiedRooms.length + nonExistentRooms.length;
+        const existingRooms = availableRooms.length + fullyOccupiedRooms.length;
+        
+        // Combine non-existent and available numbers
+        const totalAvailableRooms = availableRooms.length + nonExistentRooms.length;
+        
+        html += `
+            <div style="margin-bottom:1rem;display:flex;flex-wrap:wrap;gap:1rem;">
+                <div style="flex:1;min-width:200px;padding:0.8rem;background:#e8f5e9;border-radius:0.4rem;">
+                    <strong>Available Rooms:</strong> ${totalAvailableRooms}
+                    <div style="font-size:0.8rem;margin-top:0.3rem;">
+                        <span>In Database: ${availableRooms.length}</span> • 
+                        <span>Not Created: ${nonExistentRooms.length}</span>
+                    </div>
+                </div>
+                <div style="flex:1;min-width:200px;padding:0.8rem;background:#fff3cd;border-radius:0.4rem;">
+                    <strong>Full Rooms:</strong> ${fullyOccupiedRooms.length}
+                </div>
+            </div>
+            
+            <div style="margin-bottom:1.5rem;display:flex;flex-wrap:wrap;gap:1rem;">
+                <div style="flex:1;min-width:200px;padding:0.8rem;background:#e3f2fd;border-radius:0.4rem;">
+                    <strong>Occupied Seats:</strong> ${totalStats.totalOccupiedSeats}
+                    <div style="font-size:0.8rem;margin-top:0.3rem;">Students currently living in the hall</div>
+                </div>
+                <div style="flex:1;min-width:200px;padding:0.8rem;background:#f3e5f5;border-radius:0.4rem;">
+                    <strong>Available Seats:</strong> ${totalStats.totalAvailableSeats}
+                    <div style="font-size:0.8rem;margin-top:0.3rem;">Including seats in non-existent rooms</div>
+                </div>
+            </div>
+        `;
+        
+        // Display rooms with available seats (including non-existent rooms)
+        const combinedAvailableRooms = [...availableRooms, ...nonExistentRooms.map(room => ({
+            ...room,
+            availableSeats: 6,
+            occupiedSeats: 0,
+            totalSeats: 6,
+            notInDatabase: true
+        }))];
+        
+        if (combinedAvailableRooms.length > 0) {
+            html += `<h4 style="margin-top:1rem;margin-bottom:0.5rem;">Rooms with Available Seats:</h4>`;
+            html += `<div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));gap:0.7rem;">`;
+            
+            combinedAvailableRooms.forEach(room => {
+                const backgroundColor = room.notInDatabase ? '#f8f0e9' : '#e6f7ff';
+                const borderColor = room.notInDatabase ? '#fd7e14' : '#007bff';
+                const statusText = room.notInDatabase ? 
+                    `<div style="color:#fd7e14;font-size:0.8rem;">Not in database yet</div>` : 
+                    `<div style="color:#007bff;font-size:0.8rem;">In database</div>`;
+                
+                html += `
+                    <div style="background-color:${backgroundColor};padding:0.8rem;border-radius:0.3rem;border-left:3px solid ${borderColor};cursor:pointer;"
+                         onclick="selectRoom('${room.floor}', '${room.room}')">
+                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                            <strong>Room ${room.floor}${room.room}</strong>
+                            <span style="background:${room.notInDatabase ? '#fd7e14' : '#007bff'};color:white;font-size:0.7rem;padding:0.1rem 0.4rem;border-radius:0.2rem;">
+                                Floor ${room.floor}
+                            </span>
+                        </div>
+                        ${statusText}
+                        <div style="margin-top:0.5rem;display:flex;justify-content:space-between;">
+                            <span>Available: <strong>${room.availableSeats}</strong></span>
+                            <span>Occupied: <strong>${room.occupiedSeats}</strong></span>
+                        </div>
+                        <div style="height:4px;width:100%;background:#ddd;margin-top:0.4rem;border-radius:2px;">
+                            <div style="height:100%;width:${(room.occupiedSeats / (room.totalSeats || 6)) * 100}%;background:${room.notInDatabase ? '#fd7e14' : '#007bff'};border-radius:2px;"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+        }
+        
+        // Display fully occupied rooms
+        if (fullyOccupiedRooms.length > 0) {
+            html += `<h4 style="margin-top:1.5rem;margin-bottom:0.5rem;">Fully Occupied Rooms:</h4>`;
+            html += `<div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));gap:0.7rem;">`;
+            
+            fullyOccupiedRooms.forEach(room => {
+                html += `
+                    <div style="background-color:#f8d7da;padding:0.8rem;border-radius:0.3rem;border-left:3px solid #dc3545;cursor:pointer;"
+                         onclick="selectRoom('${room.floor}', '${room.room}')">
+                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                            <strong>Room ${room.floor}${room.room}</strong>
+                            <span style="background:#dc3545;color:white;font-size:0.7rem;padding:0.1rem 0.4rem;border-radius:0.2rem;">
+                                Full
+                            </span>
+                        </div>
+                        <div style="margin-top:0.5rem;">
+                            <span>Occupied: <strong>${room.occupiedSeats}/${room.totalSeats}</strong></span>
+                        </div>
+                        <div style="height:4px;width:100%;background:#ddd;margin-top:0.4rem;border-radius:2px;">
+                            <div style="height:100%;width:100%;background:#dc3545;border-radius:2px;"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+        }
+        
+        roomInfoSection.innerHTML = html;
+    }
+    
+    // Function to display department concentration info
+    function displayDepartmentRoomInfo(department, departmentRooms) {
+        roomInfoSection.style.display = 'block';
+        roomInfoToggleBtn.textContent = 'Hide Room Availability Status';
+        
+        if (departmentRooms.length === 0) {
+            roomInfoSection.innerHTML = `
+                <h3 style="color:#7380ec;margin-bottom:0.5rem;">Department Room Information</h3>
+                <p>No rooms found with students from the ${department} department.</p>
+            `;
+            return;
+        }
+        
+        // Group rooms by count of department students for better visualization
+        const groupedRooms = {};
+        departmentRooms.forEach(room => {
+            if (!groupedRooms[room.departmentCount]) {
+                groupedRooms[room.departmentCount] = [];
+            }
+            groupedRooms[room.departmentCount].push(room);
+        });
+        
+        let html = `
+            <h3 style="color:#7380ec;margin-bottom:0.5rem;">Department Room Information</h3>
+            <p>Rooms with <strong>${department}</strong> department students (sorted by highest count):</p>
+        `;
+        
+        // Get all keys (counts) and sort them in descending order
+        const counts = Object.keys(groupedRooms).map(Number).sort((a, b) => b - a);
+        
+        // Display rooms organized by count
+        counts.forEach(count => {
+            html += `
+                <h4 style="margin-top:1rem;margin-bottom:0.5rem;">
+                    Rooms with ${count} ${department} student${count !== 1 ? 's' : ''}:
+                </h4>
+                <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(150px, 1fr));gap:0.5rem;">
+            `;
+            
+            groupedRooms[count].forEach(room => {
+                html += `
+                    <div style="background-color:#e8f5e9;padding:0.5rem;border-radius:0.3rem;border-left:3px solid #28a745;cursor:pointer;"
+                         onclick="selectRoom('${room.floor}', '${room.room}')">
+                        <strong>Room ${room.floor}${room.room}</strong>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+        });
+        
+        roomInfoSection.innerHTML = html;
+    }
+    
+    // Handle filter button click
+    document.querySelector('.filters-area .btn-primary').addEventListener('click', async function () {
+    const floor = document.getElementById('floorSelect').value;
+    const room = document.getElementById('roomSelect').value;
+    const department = document.getElementById('departmentSelect').value;
+    
+        // If both floor and room are selected, load that specific room
+        if (floor && room) {
             currentFloor = floor;
             currentRoom = room;
             hasChanges = false;
+            
             try {
                 const roomId = `${floor}${room}`;
-                const roomDocRef = doc(db, "room", roomId);
-                const roomDoc = await getDoc(roomDocRef);
-                let membersExist = false;
-                if (roomDoc.exists()) {
-                    const membersCollectionRef = collection(roomDocRef, "members");
-                    const membersSnapshot = await getDocs(membersCollectionRef);
-                    membersExist = !membersSnapshot.empty;
+            const roomDocRef = doc(db, "room", roomId);
+            const roomDoc = await getDoc(roomDocRef);
+                
+            if (!roomDoc.exists()) {
+                // Create the room in the database
+                await setDoc(roomDocRef, {
+                    floor: floor,
+                    roomNumber: room,
+                    createdAt: new Date(),
+                    lastUpdated: new Date()
+                });
+                
+                // Create 6 empty seats for the new room
+                const batch = writeBatch(db);
+                for (let seatNum = 1; seatNum <= 6; seatNum++) {
+                    const seatId = `seat${seatNum}`;
+                    const seatDocRef = doc(db, "room", roomId, "members", seatId);
+                    batch.set(seatDocRef, {
+                        name: "",
+                        id: "",
+                        department: "",
+                        batch: "",
+                        isEmpty: true
+                    });
                 }
+                await batch.commit();
+                
+                // Clear room cache
+                delete roomExistsCache[roomId];
+                delete roomSeatStatusCache[roomId];
+                
+                console.log(`Created new room: ${roomId}`);
+            }
+                     // Now check for members
+            const membersCollectionRef = collection(roomDocRef, "members");
+            const membersSnapshot = await getDocs(membersCollectionRef);
+            const membersExist = !membersSnapshot.empty;
+            
                 for (let i = 1; i <= 6; i++) {
                     removePerson(i);
                 }
                 if (membersExist) {
-                    for (let seatNum = 1; seatNum <= 6; seatNum++) {
-                        const seatId = `seat${seatNum}`;
-                        const seatDocRef = doc(db, "room", roomId, "members", seatId);
-                        const seatDoc = await getDoc(seatDocRef);
-                        if (seatDoc.exists()) {
-                            const studentData = seatDoc.data();
-                            if (!department || studentData.department === department) {
-                                populateSeat(seatNum, studentData);
-                            }
-                        }
-                    }
-                }
-                if (availableSeatOnly) {
-                    let emptySeats = 0;
-                    for (let i = 1; i <= 6; i++) {
-                        const seatDiv = document.getElementById(`seat${i}`);
-                        if (!seatDiv.querySelector('form')) {
-                            emptySeats++;
-                        }
-                    }
-                    if (emptySeats > 0) {
-                        alert(`Room ${floor}${room} has ${emptySeats} available seats`);
-                    } else {
-                        alert(`Room ${floor}${room} has no available seats`);
-                    }
-                }
-            } catch (error) {
-                console.error("Error fetching room data:", error);
-                alert("Failed to fetch room data. Please try again.");
-            }
-        });
-        function populateSeat(seatNumber, studentData) {
-            const seatDiv = document.getElementById(`seat${seatNumber}`);
-            const card = seatDiv.closest('.card');
-            if (card) card.classList.add('expanded');
-            seatDiv.innerHTML = `
-                <form>
-                    <div class="mb-2">
-                        <input type="text" class="form-control" placeholder="Name" name="name" value="${studentData.name || ''}">
-                    </div>
-                    <div class="mb-2">
-                        <input type="text" class="form-control" placeholder="ID" name="id" value="${studentData.id || ''}">
-                    </div>
-                    <div class="mb-2">
-                        <input type="text" class="form-control" placeholder="Department" name="department" value="${studentData.department || ''}">
-                    </div>
-                    <div class="mb-2">
-                        <input type="text" class="form-control" placeholder="Batch" name="batch" value="${studentData.batch || ''}">
-                    </div>
-                    <button type="button" class="btn btn-danger" onclick="removePerson(${seatNumber})">-</button>
-                </form>
-            `;
-            const inputFields = seatDiv.querySelectorAll('input');
-            inputFields.forEach(input => {
-                input.addEventListener('change', function () {
-                    hasChanges = true;
-                });
-            });
-        }
-        window.addPerson = function (seatNumber) {
-            const seatDiv = document.getElementById(`seat${seatNumber}`);
-            const card = seatDiv.closest('.card');
-            if (card) card.classList.add('expanded');
-            seatDiv.innerHTML = `
-                <form>
-                    <div class="mb-2">
-                        <input type="text" class="form-control" placeholder="Name" name="name">
-                    </div>
-                    <div class="mb-2">
-                        <input type="text" class="form-control" placeholder="ID" name="id">
-                    </div>
-                    <div class="mb-2">
-                        <input type="text" class="form-control" placeholder="Department" name="department">
-                    </div>
-                    <div class="mb-2">
-                        <input type="text" class="form-control" placeholder="Batch" name="batch">
-                    </div>
-                    <button type="button" class="btn btn-danger" onclick="removePerson(${seatNumber})">-</button>
-                </form>
-            `;
-            hasChanges = true;
-            const inputFields = seatDiv.querySelectorAll('input');
-            inputFields.forEach(input => {
-                input.addEventListener('change', function () {
-                    hasChanges = true;
-                });
-            });
-        };
-        window.removePerson = function (seatNumber) {
-            const seatDiv = document.getElementById(`seat${seatNumber}`);
-            const card = seatDiv.closest('.card');
-            const form = seatDiv.querySelector('form');
-            if (form) {
-                hasChanges = true;
-            }
-            if (card) card.classList.remove('expanded');
-            seatDiv.innerHTML = `
-                <button class="btn btn-success" onclick="addPerson(${seatNumber})">+</button>
-            `;
-        };
-        document.querySelector('.mt-4 .btn-primary').addEventListener('click', async function () {
-            if (!currentFloor || !currentRoom) {
-                alert("Please filter a room first before submitting changes");
-                return;
-            }
-            if (!hasChanges) {
-                alert("No changes detected");
-                return;
-            }
-            try {
-                const roomId = `${currentFloor}${currentRoom}`;
-                const seatUpdates = [];
                 for (let seatNum = 1; seatNum <= 6; seatNum++) {
-                    const seatDiv = document.getElementById(`seat${seatNum}`);
-                    const form = seatDiv.querySelector('form');
                     const seatId = `seat${seatNum}`;
-                    if (form) {
-                        const nameInput = form.querySelector('input[name="name"]');
-                        const idInput = form.querySelector('input[name="id"]');
-                        const departmentInput = form.querySelector('input[name="department"]');
-                        const batchInput = form.querySelector('input[name="batch"]');
-                        const studentData = {
-                            name: nameInput ? nameInput.value.trim() : '',
-                            id: idInput ? idInput.value.trim() : '',
-                            department: departmentInput ? departmentInput.value.trim() : '',
-                            batch: batchInput ? batchInput.value.trim() : ''
-                        };
-                        if (!studentData.id) {
-                            alert(`Please enter ID for Seat ${seatNum}`);
-                            return;
+                    const seatDocRef = doc(db, "room", roomId, "members", seatId);
+                    const seatDoc = await getDoc(seatDocRef);
+                    if (seatDoc.exists()) {
+                        const studentData = seatDoc.data();
+                        if (!department || studentData.department === department) {
+                            populateSeat(seatNum, studentData);
                         }
-                        seatUpdates.push({
-                            seatId,
-                            data: studentData,
-                            isEmpty: false
-                        });
-                    } else {
-                        seatUpdates.push({
-                            seatId,
-                            isEmpty: true
-                        });
                     }
                 }
-                await setDoc(doc(db, "room", roomId), {
-                    floor: currentFloor,
-                    roomNumber: currentRoom,
-                    lastUpdated: new Date()
-                }, { merge: true });
-                for (const update of seatUpdates) {
-                    const seatDocRef = doc(db, "room", roomId, "members", update.seatId);
-                    if (update.isEmpty) {
-                        await setDoc(seatDocRef, {
-                            name: "",
-                            id: "",
-                            department: "",
-                            batch: "",
-                            isEmpty: true
-                        });
-                    } else {
-                        await setDoc(seatDocRef, {
-                            ...update.data,
-                            isEmpty: false,
-                            lastUpdated: new Date()
-                        });
-                    }
-                }
-                alert("Room data saved successfully!");
-                hasChanges = false;
-            } catch (error) {
-                console.error("Error saving room data:", error);
-                alert("Failed to save room data: " + error.message);
             }
+        } catch (error) {
+            console.error("Error fetching/creating room data:", error);
+            alert("Failed to fetch or create room data. Please try again.");
+        }
+    } 
+        // Feature: Department Concentration - Only department is selected
+         // Feature: Department Concentration - Only department is selected
+    else if (department && !floor && !room) {
+        // Clear seat display
+        for (let i = 1; i <= 6; i++) {
+            removePerson(i);
+        }
+        
+        // Show department information in the room info section
+        roomInfoSection.innerHTML = `
+            <h3 style="color:#7380ec;margin-bottom:0.5rem;">Department Room Information</h3>
+            <p>Searching for ${department} department students... This may take a moment.</p>
+            <div style="width:100%;height:6px;background:#f0f0f0;border-radius:3px;margin-top:0.5rem;overflow:hidden;">
+                <div id="depLoadingBar" style="width:0%;height:100%;background:#7380ec;border-radius:3px;transition:width 0.3s;"></div>
+            </div>
+        `;
+        roomInfoSection.style.display = 'block';
+        roomInfoToggleBtn.textContent = 'Hide Room Availability Status';
+        
+        const departmentRooms = await findDepartmentConcentration(department);
+        displayDepartmentRoomInfo(department, departmentRooms);
+    }
+    else {
+        alert("Please select both floor and room number, or select a department to see concentration.");
+    }
+});
+    
+    // Function to find rooms with highest concentration of a department
+    async function findDepartmentConcentration(department) {
+        const departmentRooms = [];
+        
+        // Get all floors and rooms from the dropdowns
+        const floors = Array.from(document.getElementById('floorSelect').options)
+            .filter(option => option.value)
+            .map(option => option.value);
+            
+        const rooms = Array.from(document.getElementById('roomSelect').options)
+            .filter(option => option.value)
+            .map(option => option.value);
+        
+        // Create combined list of all possible rooms
+        const allPossibleRooms = [];
+        for (const floor of floors) {
+            for (const room of rooms) {
+                allPossibleRooms.push({ floor, room });
+            }
+        }
+        
+        // Calculate chunk size (process rooms in batches for better UX)
+        const totalRooms = allPossibleRooms.length;
+        const chunkSize = 10; // Process 10 rooms at a time
+        
+        // Process rooms in chunks
+        for (let i = 0; i < allPossibleRooms.length; i += chunkSize) {
+            const chunk = allPossibleRooms.slice(i, i + chunkSize);
+            
+            // Process all rooms in current chunk in parallel
+            const chunkPromises = chunk.map(async ({ floor, room }) => {
+                const roomId = `${floor}${room}`;
+                const exists = await checkRoomExists(roomId);
+                
+                if (exists) {
+                    const departmentCount = await getDepartmentCount(roomId, department);
+                    if (departmentCount > 0) {
+                        return {
+                            roomId,
+                            floor,
+                            room,
+                            departmentCount
+                        };
+                    }
+                }
+                return null;
+            });
+            
+            const results = await Promise.all(chunkPromises);
+            
+            // Filter out null results and add valid ones to departmentRooms
+            results.filter(Boolean).forEach(room => departmentRooms.push(room));
+            
+            // Update progress bar
+            const progressPercent = Math.min(100, Math.round(((i + chunk.length) / totalRooms) * 100));
+            const loadingBar = document.getElementById('depLoadingBar');
+            if (loadingBar) {
+                loadingBar.style.width = `${progressPercent}%`;
+            }
+        }
+        
+        // Sort by department count (highest first)
+        departmentRooms.sort((a, b) => b.departmentCount - a.departmentCount);
+        
+        return departmentRooms;
+    }
+    
+    // Function to select a specific room from the info cards
+    window.selectRoom = function(floor, room) {
+        const floorSelect = document.getElementById('floorSelect');
+        const roomSelect = document.getElementById('roomSelect');
+        
+        // Set the dropdown values
+        for (let i = 0; i < floorSelect.options.length; i++) {
+            if (floorSelect.options[i].value === floor) {
+                floorSelect.selectedIndex = i;
+                break;
+            }
+        }
+        
+        for (let i = 0; i < roomSelect.options.length; i++) {
+            if (roomSelect.options[i].value === room) {
+                roomSelect.selectedIndex = i;
+                break;
+            }
+        }
+        
+        // Trigger the filter button click to load the room data
+        document.querySelector('.filters-area .btn-primary').click();
+    };
+    
+// Fix the populateSeat function
+
+window.populateSeat = function(seatNumber, studentData) {
+    const seatDiv = document.getElementById(`seat${seatNumber}`);
+    const card = seatDiv.closest('.card');
+    if (card) card.classList.add('expanded');
+    
+    // Check if this seat should be empty or not
+    if (studentData && !studentData.isEmpty) {
+        seatDiv.innerHTML = `
+            <form>
+                <div class="mb-2">
+                    <input type="text" class="form-control" placeholder="Name" name="name" value="${studentData.name || ''}">
+                </div>
+                <div class="mb-2">
+                    <input type="text" class="form-control" placeholder="ID" name="id" value="${studentData.id || ''}">
+                </div>
+                <div class="mb-2">
+                    <input type="text" class="form-control" placeholder="Department" name="department" value="${studentData.department || ''}">
+                </div>
+                <div class="mb-2">
+                    <input type="text" class="form-control" placeholder="Batch" name="batch" value="${studentData.batch || ''}">
+                </div>
+                <button type="button" class="btn btn-danger" onclick="removePerson(${seatNumber})">-</button>
+            </form>
+        `;
+    } else {
+        // If the seat is empty, just show the plus button
+        if (card) card.classList.remove('expanded');
+        seatDiv.innerHTML = `
+            <button class="btn btn-success" onclick="addPerson(${seatNumber})">+</button>
+        `;
+    }
+    
+    // Add event listeners for changes
+    const inputFields = seatDiv.querySelectorAll('input');
+    inputFields.forEach(input => {
+        input.addEventListener('change', function() {
+            hasChanges = true;
         });
-    </script>
+    });
+};
+    
+    window.addPerson = function(seatNumber) {
+    const seatDiv = document.getElementById(`seat${seatNumber}`);
+    const card = seatDiv.closest('.card');
+    if (card) card.classList.add('expanded');
+    seatDiv.innerHTML = `
+        <form>
+            <div class="mb-2">
+                <input type="text" class="form-control" placeholder="Name" name="name">
+            </div>
+            <div class="mb-2">
+                <input type="text" class="form-control" placeholder="ID" name="id">
+            </div>
+            <div class="mb-2">
+                <input type="text" class="form-control" placeholder="Department" name="department">
+            </div>
+            <div class="mb-2">
+                <input type="text" class="form-control" placeholder="Batch" name="batch">
+            </div>
+            <button type="button" class="btn btn-danger" onclick="removePerson(${seatNumber})">-</button>
+        </form>
+    `;
+    
+    // Add event listener for input changes
+    const inputFields = seatDiv.querySelectorAll('input');
+    inputFields.forEach(input => {
+        input.addEventListener('change', function() {
+            hasChanges = true;
+        });
+    });
+    
+    // Mark that changes have been made
+    hasChanges = true;
+};
+window.removePerson = function(seatNumber) {
+    const seatDiv = document.getElementById(`seat${seatNumber}`);
+    const card = seatDiv.closest('.card');
+    const form = seatDiv.querySelector('form');
+    
+    // Only mark changes if a form was actually removed
+    if (form) {
+        hasChanges = true;
+    }
+    
+    if (card) card.classList.remove('expanded');
+    seatDiv.innerHTML = `
+        <button class="btn btn-success" onclick="addPerson(${seatNumber})">+</button>
+    `;
+};
+    
+    // Keep submit button functionality
+    document.querySelector('.mt-4 .btn-primary').addEventListener('click', async function () {
+        if (!currentFloor || !currentRoom) {
+            alert("Please filter a room first before submitting changes");
+            return;
+        }
+        if (!hasChanges) {
+            alert("No changes detected");
+            return;
+        }
+        
+        // Show saving indicator
+        this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
+        this.disabled = true;
+        
+        try {
+            const roomId = `${currentFloor}${currentRoom}`;
+            const seatUpdates = [];
+            for (let seatNum = 1; seatNum <= 6; seatNum++) {
+                const seatDiv = document.getElementById(`seat${seatNum}`);
+                const form = seatDiv.querySelector('form');
+                const seatId = `seat${seatNum}`;
+                if (form) {
+                    const nameInput = form.querySelector('input[name="name"]');
+                    const idInput = form.querySelector('input[name="id"]');
+                    const departmentInput = form.querySelector('input[name="department"]');
+                    const batchInput = form.querySelector('input[name="batch"]');
+                    const studentData = {
+                        name: nameInput ? nameInput.value.trim() : '',
+                        id: idInput ? idInput.value.trim() : '',
+                        department: departmentInput ? departmentInput.value.trim() : '',
+                        batch: batchInput ? batchInput.value.trim() : ''
+                    };
+                    if (!studentData.id) {
+                        alert(`Please enter ID for Seat ${seatNum}`);
+                        this.innerHTML = 'Submit';
+                        this.disabled = false;
+                        return;
+                    }
+                    seatUpdates.push({
+                        seatId,
+                        data: studentData,
+                        isEmpty: false
+                    });
+                } else {
+                    seatUpdates.push({
+                        seatId,
+                        isEmpty: true
+                    });
+                }
+            }
+            
+            // Delete data from cache to force refresh
+            delete roomExistsCache[roomId];
+            delete roomSeatStatusCache[roomId];
+            
+            await setDoc(doc(db, "room", roomId), {
+                floor: currentFloor,
+                roomNumber: currentRoom,
+                lastUpdated: new Date()
+            }, { merge: true });
+            
+            // Update all seats in batch
+            const updatePromises = seatUpdates.map(update => {
+                const seatDocRef = doc(db, "room", roomId, "members", update.seatId);
+                if (update.isEmpty) {
+                    return setDoc(seatDocRef, {
+                        name: "",
+                        id: "",
+                        department: "",
+                        batch: "",
+                        isEmpty: true
+                    });
+                } else {
+                    return setDoc(seatDocRef, {
+                        ...update.data,
+                        isEmpty: false,
+                        lastUpdated: new Date()
+                    });
+                }
+            });
+            
+            await Promise.all(updatePromises);
+            
+            alert("Room data saved successfully!");
+            hasChanges = false;
+            
+            // Refresh room data for next viewing
+            roomData = null; // Force reload next time the info is viewed
+            
+            // Reset button
+            this.innerHTML = 'Submit';
+            this.disabled = false;
+        } catch (error) {
+            console.error("Error saving room data:", error);
+            alert("Failed to save room data: " + error.message);
+            
+            // Reset button
+            this.innerHTML = 'Submit';
+            this.disabled = false;
+        }
+    });
+</script>
 </body>
 
 </html>
