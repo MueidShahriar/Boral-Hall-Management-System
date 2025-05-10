@@ -67,7 +67,7 @@ signUpForm.addEventListener("submit", (e) => {
       set(ref(database, `users/${studentID}`), {
         firstName: fName,
         lastName: lName,
-        studentID: studentID,
+        id: studentID,
         email: email,
         phone: phone,
         dob: dob,
@@ -98,25 +98,33 @@ signInForm.addEventListener("submit", (e) => {
     .then((userCredential) => {
       const user = userCredential.user;
       const dbRef = ref(database);
+      
+      // Get all users from the database
       get(child(dbRef, "users"))
         .then((snapshot) => {
           if (snapshot.exists()) {
             let foundUser = null;
-            let userId = null;
+            let studentId = null;
+            
+            // Find the user with the matching email
             snapshot.forEach((childSnapshot) => {
               const userData = childSnapshot.val();
               if (userData.email === email) {
                 foundUser = userData;
-                userId = childSnapshot.key;
+                studentId = childSnapshot.key; // This is the student ID (used as the key in the database)
                 return true;
               }
             });
+            
             if (foundUser) {
-              sessionStorage.setItem("userId", userId);
+              // Store the studentId in session storage for possible use by other pages
+              sessionStorage.setItem("userId", studentId);
+              
+              // Redirect based on role, including the ID as a URL parameter
               if (foundUser.role === "admin") {
-                window.location.href = "AdminDashboard.html";
+                window.location.href = `AdminDashboard.html?id=${studentId}`;
               } else {
-                window.location.href = "StudentDashboard.html";
+                window.location.href = `StudentDashboard.html?id=${studentId}`;
               }
             } else {
               alert("User data not found in database!");

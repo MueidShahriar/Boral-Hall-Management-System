@@ -199,17 +199,44 @@
         // Retrieve studentId from URL
         const urlParams = new URLSearchParams(window.location.search);
         const studentId = urlParams.get('id');
-    
-    
+        
+        // Add the ID parameter to all navigation links in the sidebar
+        if (studentId) {
+            // Update sidebar links
+            const sidebarLinks = document.querySelectorAll('.sidebar a');
+            sidebarLinks.forEach(link => {
+                // Skip if it's the logout button
+                if (link.id === 'logoutButton') return;
+                
+                const href = link.getAttribute('href');
+                // Only update links that point to actual pages (not #)
+                if (href && href !== '#') {
+                    // Check if the URL already has parameters
+                    if (href.includes('?')) {
+                        link.setAttribute('href', `${href}&id=${studentId}`);
+                    } else {
+                        link.setAttribute('href', `${href}?id=${studentId}`);
+                    }
+                }
+            });
+        }
     
         // Function to fetch room number from Realtime Database
         async function fetchRoomNumber(studentId) {
             const dbRef = ref(database);
-            const snapshot = await get(child(dbRef, `users/${studentId}`));
-            if (snapshot.exists()) {
-                return snapshot.val().room; // Return the room number
-            } else {
-                throw new Error("User not found in the database.");
+            try {
+                const snapshot = await get(child(dbRef, `users/${studentId}`));
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    // Check if room exists, return "Not assigned" if it doesn't
+                    return userData.room || "Not assigned";
+                } else {
+                    console.log("User not found in the database");
+                    return "Unknown";
+                }
+            } catch (error) {
+                console.error("Error fetching room number:", error);
+                return "Error fetching";
             }
         }
     
@@ -240,7 +267,7 @@
                 });
     
                 alert("Complaint submitted successfully!");
-                window.location.href = "profile.html?id=" + studentId;
+                window.location.href = "StudentDashboard.html?id=" + studentId;
             } catch (error) {
                 console.error("Error submitting complaint:", error.message);
                 alert("Failed to submit complaint. Please try again.");
