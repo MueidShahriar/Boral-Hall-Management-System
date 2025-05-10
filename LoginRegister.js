@@ -11,6 +11,15 @@ import {
   get,
   child
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+import { 
+  getFirestore, 
+  collection, 
+  doc, 
+  getDoc, 
+  updateDoc, 
+  setDoc, 
+  serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBF-nMMW5lG44JfHxx4HxCbf5N81geOiRs",
@@ -25,6 +34,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
+const firestore = getFirestore(app);
 
 const signInButton = document.getElementById("signInButton");
 const signUpButton = document.getElementById("signUpButton");
@@ -40,20 +50,6 @@ signUpButton.addEventListener("click", () => {
   signInContainer.style.display = "none";
   signUpContainer.style.display = "block";
 });
-
-// Add this import at the top of your file:
-import { 
-  getFirestore, 
-  collection, 
-  doc, 
-  getDoc, 
-  updateDoc, 
-  setDoc, 
-  serverTimestamp 
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-
-// Initialize Firestore
-const firestore = getFirestore(app);
 
 // Function to check if a room number is valid
 function isValidRoomNumber(roomNumber) {
@@ -201,61 +197,49 @@ signUpForm.addEventListener("submit", async (e) => {
   }
 });
 
-// The rest of your code remains the same
-
+// Updated sign-in process in LoginRegister.js
 const signInForm = document.getElementById("signInForm");
-signInForm.addEventListener("submit", (e) => {
+signInForm.addEventListener("submit", function(e) {
   e.preventDefault();
+  
+  const studentId = document.getElementById('loginStudentId').value;
+  const password = document.getElementById('loginPassword').value;
 
-  const email = document.getElementById("loginEmail").value;
-  const password = document.getElementById("loginPassword").value;
+  // Check the email and role associated with the student ID in the database
+  const dbRef = ref(database);
+  get(child(dbRef, `users/${studentId}`))
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        const email = snapshot.val().email; // Get the email from the database
+        const role = snapshot.val().role; // Get the role from the database
 
-  signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      const dbRef = ref(database);
-      
-      // Get all users from the database
-      get(child(dbRef, "users"))
-        .then((snapshot) => {
-          if (snapshot.exists()) {
-            let foundUser = null;
-            let studentId = null;
+        // Authenticate with email and password (Firebase Auth requires email)
+        signInWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            // Clear any existing logout flags
+            sessionStorage.removeItem("loggedOut");
             
-            // Find the user with the matching email
-            snapshot.forEach((childSnapshot) => {
-              const userData = childSnapshot.val();
-              if (userData.email === email) {
-                foundUser = userData;
-                studentId = childSnapshot.key; // This is the student ID (used as the key in the database)
-                return true;
-              }
-            });
+            // Store the studentId in session storage
+            sessionStorage.setItem("userId", studentId);
             
-            if (foundUser) {
-              // Store the studentId in session storage for possible use by other pages
-              sessionStorage.setItem("userId", studentId);
-              
-              // Redirect based on role, including the ID as a URL parameter
-              if (foundUser.role === "admin") {
-                window.location.href = `AdminDashboard.html?id=${studentId}`;
-              } else {
-                window.location.href = `StudentDashboard.html?id=${studentId}`;
-              }
+            // Redirect based on role, including the ID as a URL parameter
+            if (role === 'admin') {
+              window.location.href = `AdminDashboard.html?id=${studentId}`;
             } else {
-              alert("User data not found in database!");
+              window.location.href = `StudentDashboard.html?id=${studentId}`;
             }
-          } else {
-            alert("No user data available in database!");
-          }
-          signInForm.reset();
-        })
-        .catch((error) => {
-          alert("Error accessing user data: " + error.message);
-        });
+          })
+          .catch((error) => {
+            console.error("Authentication error:", error);
+            alert("Authentication Error: " + error.message);
+          });
+      } else {
+        alert("Student ID not found in the database.");
+      }
     })
     .catch((error) => {
-      alert("Login Error: " + error.message);
+      console.error("Database error:", error);
+      alert("Database Error: " + error.message);
     });
 });
 

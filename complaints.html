@@ -465,7 +465,7 @@ main h2::after {
                 <a href="complaints.html" class="Active"><span class="material-icons">report</span>
                     <h3>Check Complaints</h3>
                 </a>
-                <a href="#" id="logout"><span class="material-icons">logout</span>
+                <a href="#" class="logout-btn"><span class="material-icons">logout</span>
                     <h3>Log Out</h3>
                 </a>
                 <p class="rsm">2025©️RSM</p>
@@ -528,27 +528,29 @@ main h2::after {
         const firestore = getFirestore(app); // Initialize Firestore
     
         // Logout functionality
-        document.getElementById('logout').onclick = function () {
-            signOut(auth)
-                .then(() => {
-                    // Clear session storage
-                    sessionStorage.clear();
-    
-                    // Redirect to login page
-                    window.location.href = "login.html";
-                })
-                .catch((error) => {
-                    console.error("Error during logout:", error.message);
-                    alert("Failed to log out. Please try again.");
-                });
-        };
+        document.querySelectorAll('.logout-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        signOut(auth)
+            .then(() => {
+                // Clear session storage
+                sessionStorage.clear();
+
+                // Redirect to login page
+                window.location.href = "LoginRegister.html";
+            })
+            .catch((error) => {
+                console.error("Error during logout:", error.message);
+                alert("Failed to log out. Please try again.");
+            });
+    });
+});
     
         // Prevent browser caching
         window.onload = function () {
             if (performance.navigation.type === 2) {
                 // Clear session storage and redirect to login if back button is pressed
                 sessionStorage.clear();
-                window.location.href = "login.html";
+                window.location.href = "LoginRegister.html";
             }
         };
     
