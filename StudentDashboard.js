@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const menuBtn = document.getElementById('menu_bar');
     const sidebar = document.querySelector('.aside');
     const closeBtn = document.querySelector('.close span');
+    const complaintBtn = document.getElementById('complainButton');
+
 
     menuBtn.addEventListener('click', () => {
         sidebar.classList.add('show');
@@ -11,19 +13,16 @@ document.addEventListener("DOMContentLoaded", () => {
         sidebar.classList.remove('show');
     });
 
-    document.getElementById("logoutBtn").addEventListener("click", function () {
-        sessionStorage.clear();
-        localStorage.clear();
-        document.cookie.split(";").forEach(function(c) {
-            document.cookie = c.trim().split("=")[0] + "=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
+    const logoutButtons = document.querySelectorAll("#logoutButton");
+    logoutButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            sessionStorage.clear();
+            localStorage.clear();
+            window.location.href = "LoginRegister.html";
         });
-        window.location.href = "login.html";
     });
-
-    document.getElementById("logoutButton").addEventListener("click", () => {
-        sessionStorage.clear();
-        localStorage.clear();
-        window.location.href = "LoginRegister.html";
+    complaintBtn.addEventListener('click', () => {
+       window.location.href = "complainbox.html";
     });
 });
 
