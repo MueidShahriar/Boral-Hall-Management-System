@@ -41,51 +41,167 @@ signUpButton.addEventListener("click", () => {
   signUpContainer.style.display = "block";
 });
 
+// Add this import at the top of your file:
+import { 
+  getFirestore, 
+  collection, 
+  doc, 
+  getDoc, 
+  updateDoc, 
+  setDoc, 
+  serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+// Initialize Firestore
+const firestore = getFirestore(app);
+
+// Function to check if a room number is valid
+function isValidRoomNumber(roomNumber) {
+  // Convert room number to integer for comparison
+  const room = parseInt(roomNumber);
+  
+  // Check if room is in any of the valid ranges
+  return (
+    (room >= 102 && room <= 117) ||
+    (room >= 202 && room <= 217) ||
+    (room >= 302 && room <= 317) ||
+    (room >= 402 && room <= 417) ||
+    (room >= 502 && room <= 517) ||
+    (room >= 602 && room <= 617)
+  );
+}
+
+// Function to create a new room with empty seats
+async function createNewRoom(roomNumber) {
+  const roomRef = doc(firestore, "room", roomNumber);
+  
+  // Create room document with timestamp
+  await setDoc(roomRef, {
+    created: serverTimestamp(),
+    roomNumber: roomNumber
+  });
+  
+  // Create 6 seats in the member collection of this room
+  const memberCollectionRef = collection(roomRef, "members");
+  
+  for (let i = 1; i <= 6; i++) {
+    const seatRef = doc(memberCollectionRef, `seat${i}`);
+    await setDoc(seatRef, {
+      isEmpty: true,
+      lastUpdated: serverTimestamp()
+    });
+  }
+  
+  console.log(`Created new room ${roomNumber} with 6 empty seats`);
+}
+
+// In the signUpForm submit event listener, update the registration process
 const signUpForm = document.getElementById("signUpForm");
-signUpForm.addEventListener("submit", (e) => {
+signUpForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const fName = document.getElementById("fName").value;
-  const lName = document.getElementById("lName").value;
   const studentID = document.getElementById("studentID").value;
-  const email = document.getElementById("email").value;
+  const name = document.getElementById("name").value;
   const password = document.getElementById("password").value;
   const confirmPassword = document.getElementById("cPassword").value;
-  const phone = document.getElementById("phone").value;
-  const dob = document.getElementById("dob").value;
+  const email = document.getElementById("email").value;
   const address = document.getElementById("address").value;
+  const fatherName = document.getElementById("fatherName").value;
+  const motherName = document.getElementById("motherName").value;
+  const phone = document.getElementById("phone").value;
+  const department = document.getElementById("department").value;
+  const batch = document.getElementById("batch").value;
+  const room = document.getElementById("room").value;
+  const dob = document.getElementById("dob").value;
 
   if (password !== confirmPassword) {
     alert("Passwords do not match!");
     return;
   }
 
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-
-      set(ref(database, `users/${studentID}`), {
-        firstName: fName,
-        lastName: lName,
-        id: studentID,
-        email: email,
-        phone: phone,
-        dob: dob,
-        address: address,
-        role: "member"
-      }).then(() => {
-        alert("Registered successfully");
-        signUpForm.reset();
-        signInContainer.style.display = "block";
-        signUpContainer.style.display = "none";
-      }).catch((error) => {
-        alert("Error saving data: " + error.message);
-      });
-    })
-    .catch((error) => {
-      alert("Error: " + error.message);
+  try {
+    // First check if the room exists
+    const roomRef = doc(firestore, "room", room);
+    const roomSnapshot = await getDoc(roomRef);
+    
+    // If room doesn't exist, check if it's a valid room number
+    if (!roomSnapshot.exists()) {
+      if (!isValidRoomNumber(room)) {
+        alert(`Room ${room} is not a valid room number. Please enter a valid room number.`);
+        return;
+      }
+      
+      // Create the new room with empty seats
+      await createNewRoom(room);
+      console.log(`Room ${room} created successfully.`);
+    }
+    
+    // Check for available seats in the room
+    let seatAssigned = false;
+    let assignedSeat = "";
+    
+    // Try each seat from seat1 to seat6
+    for (let i = 1; i <= 6; i++) {
+      const seatRef = doc(roomRef, `members/seat${i}`);
+      const seatSnapshot = await getDoc(seatRef);
+      
+      // If the seat document doesn't exist or isEmpty is true, we can assign this seat
+      if (!seatSnapshot.exists() || seatSnapshot.data().isEmpty === true) {
+        assignedSeat = `seat${i}`;
+        
+        // Update the seat with student information
+        await setDoc(seatRef, {
+          id: studentID,
+          name: name,
+          batch: batch,
+          department: department,
+          isEmpty: false,
+          lastUpdated: serverTimestamp()
+        });
+        
+        seatAssigned = true;
+        break;
+      }
+    }
+    
+    if (!seatAssigned) {
+      alert(`Room ${room} is full. Please select a different room.`);
+      return;
+    }
+    
+    // Continue with user registration in Authentication and Realtime Database
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    
+    // Save user data to Realtime Database
+    await set(ref(database, `users/${studentID}`), {
+      name: name,
+      email: email,
+      address: address,
+      fatherName: fatherName,
+      motherName: motherName,
+      phone: phone,
+      department: department,
+      batch: batch,
+      room: room,
+      seat: assignedSeat,  // Add the assigned seat information
+      dob: dob,
+      role: "member",
+      id: studentID
     });
+    
+    alert(`Registered successfully! You have been assigned to Room ${room}, ${assignedSeat}.`);
+    signUpForm.reset();
+    signInContainer.style.display = "block";
+    signUpContainer.style.display = "none";
+    
+  } catch (error) {
+    console.error("Registration error:", error);
+    alert("Error during registration: " + error.message);
+  }
 });
+
+// The rest of your code remains the same
 
 const signInForm = document.getElementById("signInForm");
 signInForm.addEventListener("submit", (e) => {
