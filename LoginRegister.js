@@ -186,7 +186,7 @@ signUpForm.addEventListener("submit", async (e) => {
       id: studentID
     });
     
-    alert(`Registered successfully! You have been assigned to Room ${room}, ${assignedSeat}.`);
+    alert(`Registered successfully! Welcome ${name}!`);
     signUpForm.reset();
     signInContainer.style.display = "block";
     signUpContainer.style.display = "none";
