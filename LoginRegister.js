@@ -51,12 +51,8 @@ signUpButton.addEventListener("click", () => {
   signUpContainer.style.display = "block";
 });
 
-// Function to check if a room number is valid
 function isValidRoomNumber(roomNumber) {
-  // Convert room number to integer for comparison
   const room = parseInt(roomNumber);
-  
-  // Check if room is in any of the valid ranges
   return (
     (room >= 102 && room <= 117) ||
     (room >= 202 && room <= 217) ||
@@ -67,17 +63,14 @@ function isValidRoomNumber(roomNumber) {
   );
 }
 
-// Function to create a new room with empty seats
 async function createNewRoom(roomNumber) {
   const roomRef = doc(firestore, "room", roomNumber);
   
-  // Create room document with timestamp
   await setDoc(roomRef, {
     created: serverTimestamp(),
     roomNumber: roomNumber
   });
   
-  // Create 6 seats in the member collection of this room
   const memberCollectionRef = collection(roomRef, "members");
   
   for (let i = 1; i <= 6; i++) {
@@ -87,11 +80,8 @@ async function createNewRoom(roomNumber) {
       lastUpdated: serverTimestamp()
     });
   }
-  
-  console.log(`Created new room ${roomNumber} with 6 empty seats`);
 }
 
-// In the signUpForm submit event listener, update the registration process
 const signUpForm = document.getElementById("signUpForm");
 signUpForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -116,36 +106,28 @@ signUpForm.addEventListener("submit", async (e) => {
   }
 
   try {
-    // First check if the room exists
     const roomRef = doc(firestore, "room", room);
     const roomSnapshot = await getDoc(roomRef);
     
-    // If room doesn't exist, check if it's a valid room number
     if (!roomSnapshot.exists()) {
       if (!isValidRoomNumber(room)) {
         alert(`Room ${room} is not a valid room number. Please enter a valid room number.`);
         return;
       }
       
-      // Create the new room with empty seats
       await createNewRoom(room);
-      console.log(`Room ${room} created successfully.`);
     }
     
-    // Check for available seats in the room
     let seatAssigned = false;
     let assignedSeat = "";
     
-    // Try each seat from seat1 to seat6
     for (let i = 1; i <= 6; i++) {
       const seatRef = doc(roomRef, `members/seat${i}`);
       const seatSnapshot = await getDoc(seatRef);
       
-      // If the seat document doesn't exist or isEmpty is true, we can assign this seat
       if (!seatSnapshot.exists() || seatSnapshot.data().isEmpty === true) {
         assignedSeat = `seat${i}`;
         
-        // Update the seat with student information
         await setDoc(seatRef, {
           id: studentID,
           name: name,
@@ -165,11 +147,9 @@ signUpForm.addEventListener("submit", async (e) => {
       return;
     }
     
-    // Continue with user registration in Authentication and Realtime Database
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
     
-    // Save user data to Realtime Database
     await set(ref(database, `users/${studentID}`), {
       name: name,
       email: email,
@@ -180,7 +160,7 @@ signUpForm.addEventListener("submit", async (e) => {
       department: department,
       batch: batch,
       room: room,
-      seat: assignedSeat,  // Add the assigned seat information
+      seat: assignedSeat,
       dob: dob,
       role: "member",
       id: studentID
@@ -197,7 +177,6 @@ signUpForm.addEventListener("submit", async (e) => {
   }
 });
 
-// Updated sign-in process in LoginRegister.js
 const signInForm = document.getElementById("signInForm");
 signInForm.addEventListener("submit", function(e) {
   e.preventDefault();
@@ -205,24 +184,18 @@ signInForm.addEventListener("submit", function(e) {
   const studentId = document.getElementById('loginStudentId').value;
   const password = document.getElementById('loginPassword').value;
 
-  // Check the email and role associated with the student ID in the database
   const dbRef = ref(database);
   get(child(dbRef, `users/${studentId}`))
     .then((snapshot) => {
       if (snapshot.exists()) {
-        const email = snapshot.val().email; // Get the email from the database
-        const role = snapshot.val().role; // Get the role from the database
+        const email = snapshot.val().email;
+        const role = snapshot.val().role;
 
-        // Authenticate with email and password (Firebase Auth requires email)
         signInWithEmailAndPassword(auth, email, password)
           .then((userCredential) => {
-            // Clear any existing logout flags
             sessionStorage.removeItem("loggedOut");
-            
-            // Store the studentId in session storage
             sessionStorage.setItem("userId", studentId);
             
-            // Redirect based on role, including the ID as a URL parameter
             if (role === 'admin') {
               window.location.href = `AdminDashboard.html?id=${studentId}`;
             } else {
