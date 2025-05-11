@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Room Allocaton System</title>
+    <title>Room Allocaton System | Boral Hall</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link rel="shortcut icon" href="images/BAUET-Logo.png" type="image/x-icon" />
 
@@ -837,7 +837,7 @@
                 <a href="#"><span class="material-icons">restaurant_menu</span>
                     <h3>Meal Report</h3>
                 </a>
-                <a href="#"><span class="material-icons">report</span>
+                <a href="complaints.html"><span class="material-icons">report</span>
                     <h3>Check Complaints</h3>
                 </a>
                 <a href="#"><span class="material-icons">logout</span>
@@ -1462,10 +1462,10 @@
             html += `<div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));gap:0.7rem;">`;
             
             combinedAvailableRooms.forEach(room => {
-                const backgroundColor = room.notInDatabase ? '#f8f0e9' : '#e6f7ff';
-                const borderColor = room.notInDatabase ? '#fd7e14' : '#007bff';
+                const backgroundColor = room.notInDatabase ? '#e8f5e9' : '#e6f7ff';
+                const borderColor = room.notInDatabase ? '#0ba31d' : '#007bff';
                 const statusText = room.notInDatabase ? 
-                    `<div style="color:#fd7e14;font-size:0.8rem;">Not in database yet</div>` : 
+                    `<div style="color:#4bcf1b;font-size:0.8rem;">Not in database yet</div>` : 
                     `<div style="color:#007bff;font-size:0.8rem;">In database</div>`;
                 
                 html += `
@@ -1473,7 +1473,7 @@
                          onclick="selectRoom('${room.floor}', '${room.room}')">
                         <div style="display:flex;justify-content:space-between;align-items:center;">
                             <strong>Room ${room.floor}${room.room}</strong>
-                            <span style="background:${room.notInDatabase ? '#fd7e14' : '#007bff'};color:white;font-size:0.7rem;padding:0.1rem 0.4rem;border-radius:0.2rem;">
+                            <span style="background:${room.notInDatabase ? '#0ba31d' : '#007bff'};color:white;font-size:0.7rem;padding:0.1rem 0.4rem;border-radius:0.2rem;">
                                 Floor ${room.floor}
                             </span>
                         </div>

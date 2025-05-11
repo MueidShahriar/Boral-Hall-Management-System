@@ -5,11 +5,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Complaints System</title>
+<<<<<<< HEAD
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link rel="shortcut icon" href="images/BAUET-Logo.png" type="image/x-icon" />
+=======
 
     <!-- Google Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link rel="shortcut icon" href="images/BAUET-Logo.png" type="image/x-icon" />
     <!-- Tailwind CSS -->
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -37,12 +42,17 @@
             }
         }
     </script>
+<<<<<<< HEAD
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+=======
     
     <style>
         /* Custom styles that can't be easily achieved with Tailwind */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         
         /* === Root Variables === */
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
         :root {
             --clr-primary: #7380ec;
             --clr-primary-variant: #111e88;
@@ -56,18 +66,27 @@
             --clr-info-light: #dce1eb;
             --clr-light: rgba(132, 139, 200, 0.18);
             --clr-bg: #f6f6f9;
+<<<<<<< HEAD
+=======
 
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
             --card-radius: 2rem;
             --radius-1: 0.4rem;
             --radius-2: 0.8rem;
             --radius-3: 1.2rem;
+<<<<<<< HEAD
+=======
 
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
             --padding: 1.2rem;
             --card-padding: 1.8rem;
             --shadow: 0 2rem 3rem var(--clr-light);
         }
+<<<<<<< HEAD
+=======
         
         /* === Reset & Base === */
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
         * {
             margin: 0;
             padding: 0;
@@ -75,7 +94,10 @@
             list-style: none;
             text-decoration: none;
         }
+<<<<<<< HEAD
+=======
         
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
         body {
             font-family: 'Poppins', sans-serif;
             background: white;
@@ -85,6 +107,34 @@
             width: 100vw;
             height: 100vh;
             margin: 0;
+<<<<<<< HEAD
+            padding: 0;
+            overflow-x: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+        .container {
+            display: grid;
+            width: 100%;
+            margin: 0;
+            grid-template-areas:
+                "sidebar main"
+                "sidebar main";
+            grid-template-columns: 14rem 1fr;
+            grid-template-rows: auto 1fr;
+            padding: 0;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+        .aside {
+            height: 100vh;
+            background: var(--clr-white);
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+            z-index: 10;
+            position: relative;
+        }
+=======
     padding: 0;
     overflow-x: hidden;
     width: 100vw;
@@ -121,6 +171,7 @@
     justify-self: start;
 }
 
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
         .aside .top {
             display: flex;
             align-items: center;
@@ -128,23 +179,35 @@
             padding: 1.5rem;
             border-bottom: 1px solid rgba(164, 158, 158, 0.1);
         }
+<<<<<<< HEAD
+=======
 
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
         .aside .logo {
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
+<<<<<<< HEAD
+        .aside .logo h2 {
+            font-size: 1.2rem;
+        }
+=======
 
         .aside .logo h2 {
             font-size: 1.2rem;
         }
 
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
         .aside .top .close span {
             display: none;
             font-size: 2rem;
             cursor: pointer;
         }
+<<<<<<< HEAD
+=======
 
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
         .sidebar {
             display: flex;
             flex-direction: column;
@@ -152,6 +215,20 @@
             height: 85vh;
         }
         .sidebar a {
+<<<<<<< HEAD
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.5rem;
+            padding: 0.3rem;
+            color: var(--clr-dark);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--radius-1);
+            background: var(--clr-white);
+            margin-bottom: 0.1rem;
+            transition: background 0.2s, color 0.2s;
+        }
+=======
     display: flex;
     align-items: center;
     gap: 0.8rem; /* Increased gap between icon and text */
@@ -165,26 +242,44 @@
     transition: background 0.2s, color 0.2s;
 }
 
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
         .sidebar a:hover {
             background: rgba(115, 128, 236, 0.1);
             color: var(--clr-primary);
         }
+<<<<<<< HEAD
+=======
 
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
         .sidebar a.Active {
             background: var(--clr-light);
             border-left: 5px solid var(--clr-primary-variant);
             color: var(--clr-primary-variant);
         }
+<<<<<<< HEAD
+=======
 
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
         .sidebar a span {
             font-size: 1.6rem;
             transition: margin 0.2s ease;
         }
+<<<<<<< HEAD
+=======
 
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
         .sidebar a:hover span {
             margin-left: 0.25rem;
         }
         .sidebar a h3 {
+<<<<<<< HEAD
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .sidebar a.Active h3 {
+            font-weight: 700;
+        }
+=======
     font-size: 0.9rem; /* Larger text */
     font-weight: 600; /* Bolder text */
 }
@@ -193,6 +288,7 @@
     font-weight: 700; /* Even bolder for active item */
 }
         
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
         .sidebar .rsm {
             font-size: 0.78rem;
             font-weight: 600;
@@ -200,6 +296,70 @@
             color: rgba(31, 31, 164, 0.996);
         }
         main {
+<<<<<<< HEAD
+            grid-area: main;
+            position: relative;
+            padding-top: 5rem;
+            justify-self: center;
+            width: 95%;
+            max-width: 1400px;
+            margin: 1rem auto;
+            background: var(--clr-bg);
+            border-radius: var(--radius-2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
+            padding: 2.5rem 2rem 2rem 2rem;
+            min-height: 80vh;
+            transition: background 0.3s;
+        }
+        main h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var (--clr-primary-variant);
+            margin-bottom: 2rem;
+            letter-spacing: 1.5px;
+            text-align: center;
+            text-transform: uppercase;
+            width: 100%;
+            position: relative;
+            padding-bottom: 0.8rem;
+        }
+        main h2::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            height: 4px;
+            width: 100px;
+            background: var(--clr-primary);
+            border-radius: 2px;
+        }
+        .complaint-card h5 {
+            color: var(--clr-primary-variant);
+            font-weight: 700;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            letter-spacing: 0.5px;
+        }
+        .right {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: auto;
+            z-index: 100;
+            margin: 0.5rem 1rem;
+        }
+        .right .top {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            background: var(--clr-white);
+            padding: 0.5rem;
+            border-radius: var(--radius-1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            height: 3rem;
+        }
+=======
     grid-area: main;
     position: relative;
     padding-top: 5rem; /* Space for the right panel on top */
@@ -271,6 +431,7 @@ main h2::after {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     height: 3rem;
 }
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
         .notification-btn,
         .logout-btn {
             background: none;
@@ -281,21 +442,33 @@ main h2::after {
             font-size: 1rem;
             color: var(--clr-dark);
         }
+<<<<<<< HEAD
+        .logout-btn:hover {
+            color: var(--clr-danger);
+        }
+=======
 
         .logout-btn:hover {
             color: var(--clr-danger);
         }
         
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
         .profile-photo img {
             width: 2.4rem;
             height: 2.4rem;
             border-radius: 50%;
             object-fit: cover;
         }
+<<<<<<< HEAD
+        .right .top button {
+            margin: 0 0.6rem;
+        }
+=======
         
 .right .top button {
     margin: 0 0.6rem; /* Add horizontal space between buttons */
 }
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
         #menu_bar {
             display: none;
             background: none;
@@ -305,6 +478,40 @@ main h2::after {
             color: var(--clr-dark);
         }
         .complaint-grid {
+<<<<<<< HEAD
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 1200px;
+        }
+        .complaint-card {
+            background: var(--clr-white);
+            border-radius: var(--radius-2);
+            padding: 1.25rem;
+            box-shadow: 0 4px 24px 0 rgba(115, 128, 236, 0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+        }
+        .solved-btn {
+            background: rgb(2, 81, 2);
+            color: white;
+            border: none;
+            border-radius: var(--radius-1);
+            padding: 0.5rem 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .solved-btn:hover {
+            background: var(--clr-primary-variant);
+            transform: translateY(-2px);
+        }
+=======
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
@@ -348,12 +555,56 @@ main h2::after {
             transform: translateY(-4px) scale(1.02);
         }
 
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
         .complaint-card h5 {
             color: var(--clr-primary-variant);
             font-weight: 700;
             font-size: 1.2rem;
             margin-bottom: 1rem;
         }
+<<<<<<< HEAD
+        .complaint-card p {
+            margin-bottom: 0.5rem;
+        }
+        .complaint-description {
+            transition: opacity 0.3s ease;
+        }
+        @media screen and (max-width: 1200px) {
+            .container {
+                grid-template-columns: 7rem 1fr;
+            }
+        }
+        @media screen and (max-width: 768px) {
+            .container {
+                grid-template-areas:
+                    "main"
+                    "main";
+                grid-template-columns: 1fr;
+            }
+            .aside {
+                position: fixed;
+                transform: translateX(-100%);
+            }
+            .aside.show {
+                transform: translateX(0);
+            }
+            main {
+                padding-top: 5rem;
+            }
+            .right {
+                width: 100%;
+                position: fixed;
+                top: 0;
+                right: 0;
+                background: var(--clr-white);
+                margin: 0;
+                padding: 0 1rem;
+            }
+            #menu_bar {
+                display: inline-block;
+            }
+        }
+=======
 
         .complaint-card p {
             margin-bottom: 0.5rem;
@@ -406,6 +657,7 @@ main h2::after {
 }
         
         /* === Complaint Grid === */
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
         .complaint-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -413,6 +665,17 @@ main h2::after {
             margin-bottom: 2rem;
         }
         @media (max-width: 992px) {
+<<<<<<< HEAD
+            .complaint-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 600px) {
+            .complaint-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+=======
     .complaint-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -423,12 +686,16 @@ main h2::after {
         grid-template-columns: 1fr;
     }
 }
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
     </style>
 </head>
 
 <body>
     <div class="container">
+<<<<<<< HEAD
+=======
         <!-- Sidebar Section -->
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
         <aside class="aside">
             <div class="top">
                 <div class="logo">
@@ -439,7 +706,10 @@ main h2::after {
                     <span class="material-icons">close</span>
                 </div>
             </div>
+<<<<<<< HEAD
+=======
 
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
             <div class="sidebar">
                 <a href="AdminDashboard.html"><span class="material-icons">dashboard</span>
                     <h3>Dashboard</h3>
@@ -471,6 +741,24 @@ main h2::after {
                 <p class="rsm">2025©️RSM</p>
             </div>
         </aside>
+<<<<<<< HEAD
+        <main>
+            <h2>Complaints</h2>
+            <div class="complaint-grid" id="complaints-container">
+            </div>
+        </main>
+        <div class="right">
+            <div class="top">
+                <button id="menu_bar" type="button">
+                    <span class="material-icons">menu</span>
+                </button>
+                <button class="notification-btn" title="Notifications" type="button">
+                    <span class="material-icons">notifications</span>
+                </button>
+                <button class="logout-btn" title="Logout" type="button">
+                    <span class="material-icons">logout</span>
+                </button>
+=======
 
         <!-- Main Content -->
         <main>
@@ -496,6 +784,7 @@ main h2::after {
                     <span class="material-icons">logout</span>
                 </button>
 
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
                 <div class="profile">
                     <div class="profile-photo" title="Profile">
                         <img src="assets/img/profile-user.png" alt="Profile Photo" />
@@ -504,6 +793,12 @@ main h2::after {
             </div>
         </div>
     </div>
+<<<<<<< HEAD
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+        import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+=======
 
     <script type="module">
         // Import the functions you need from the SDKs you need
@@ -512,6 +807,7 @@ main h2::after {
         import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
     
         // Your web app's Firebase configuration
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
         const firebaseConfig = {
             apiKey: "AIzaSyBF-nMMW5lG44JfHxx4HxCbf5N81geOiRs",
             authDomain: "bauet-hms-63f5b.firebaseapp.com",
@@ -521,6 +817,26 @@ main h2::after {
             messagingSenderId: "200038506273",
             appId: "1:200038506273:web:2e141fc9ec36de049ae860"
         };
+<<<<<<< HEAD
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const firestore = getFirestore(app);
+        document.querySelectorAll('.logout-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                signOut(auth)
+                    .then(() => {
+                        sessionStorage.clear();
+                        window.location.href = "LoginRegister.html";
+                    })
+                    .catch((error) => {
+                        console.error("Error during logout:", error.message);
+                        alert("Failed to log out. Please try again.");
+                    });
+            });
+        });
+        window.onload = function () {
+            if (performance.navigation.type === 2) {
+=======
     
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
@@ -549,10 +865,29 @@ main h2::after {
         window.onload = function () {
             if (performance.navigation.type === 2) {
                 // Clear session storage and redirect to login if back button is pressed
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
                 sessionStorage.clear();
                 window.location.href = "LoginRegister.html";
             }
         };
+<<<<<<< HEAD
+        async function loadComplaints() {
+            const container = document.getElementById("complaints-container");
+            container.innerHTML = "";
+            try {
+                const querySnapshot = await getDocs(collection(firestore, "Complaints"));
+                querySnapshot.forEach((doc) => {
+                    const complaint = doc.data();
+                    const docId = doc.id;
+                    const subject = complaint.subject || "No Subject";
+                    const description = complaint.description || "No Description";
+                    const room = complaint.roomNumber || "No Room";
+                    const id = complaint.userId || "No ID";
+                    const card = document.createElement("div");
+                    card.className = "complaint-card";
+                    card.id = `card-${doc.id}`;
+                    card.innerHTML = `
+=======
     
         // Function to load complaints from Firestore
         async function loadComplaints() {
@@ -578,6 +913,7 @@ main h2::after {
             
             // Modified card HTML to include the button with proper styling
             card.innerHTML = `
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
                 <h5>${subject}</h5>
                 <p><b>Room:</b> ${room}</p>
                 <p><b>ID:</b> ${id}</p>
@@ -588,6 +924,54 @@ main h2::after {
                     <button class="solved-btn" onclick="markAsSolved('${doc.id}', event)">Solved</button>
                 </div>
             `;
+<<<<<<< HEAD
+                    card.onclick = function (e) {
+                        if (!e.target.classList.contains('solved-btn')) {
+                            toggleComplaint(doc.id);
+                        }
+                    };
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error("Error loading complaints:", error.message);
+                alert("Failed to load complaints. Please try again.");
+            }
+        }
+        window.markAsSolved = async function (id, event) {
+            if (event) {
+                event.stopPropagation();
+            }
+            try {
+                const complaintRef = doc(firestore, "Complaints", id);
+                await deleteDoc(complaintRef);
+                const card = document.getElementById(`card-${id}`);
+                if (card) {
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.8)';
+                    setTimeout(() => {
+                        card.remove();
+                    }, 300);
+                }
+                alert("Complaint marked as solved and removed!");
+            } catch (error) {
+                console.error("Error removing complaint:", error);
+                alert("Failed to mark complaint as solved. Please try again.");
+            }
+        };
+        window.toggleComplaint = function (id) {
+            document.querySelectorAll('.complaint-description').forEach(desc => {
+                const parentCard = desc.closest('.complaint-card');
+                if (!desc.classList.contains('hidden') && desc.id !== `description-${id}`) {
+                    desc.classList.add('opacity-0');
+                    setTimeout(() => {
+                        desc.classList.add('hidden');
+                        if (parentCard) parentCard.classList.remove('shadow-card-expanded', 'scale-103');
+                    }, 300);
+                }
+            });
+            const description = document.getElementById(`description-${id}`);
+            const card = description.closest(".complaint-card");
+=======
             
             card.onclick = function(e) {
                 // Don't toggle the complaint if the button was clicked
@@ -642,6 +1026,7 @@ window.markAsSolved = async function(id, event) {
             const description = document.getElementById(`description-${id}`);
             const card = description.closest(".complaint-card");
             
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
             if (description.classList.contains("hidden")) {
                 description.classList.remove("hidden");
                 setTimeout(() => {
@@ -656,12 +1041,22 @@ window.markAsSolved = async function(id, event) {
                 }, 300);
             }
         };
+<<<<<<< HEAD
+=======
         
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
         const urlParams = new URLSearchParams(window.location.search);
         const studentId = urlParams.get('id');
         document.querySelector("[title='Profile']").onclick = function () {
             window.location.href = `profile.html?id=${studentId}`;
         };
+<<<<<<< HEAD
+        document.addEventListener("DOMContentLoaded", function () {
+            loadComplaints();
+            const menuBtn = document.getElementById('menu_bar');
+            const sidebar = document.querySelector('.aside');
+            const closeBtn = document.querySelector('.close span');
+=======
     
         // Load complaints on page load
         document.addEventListener("DOMContentLoaded", function() {
@@ -673,13 +1068,17 @@ window.markAsSolved = async function(id, event) {
             const closeBtn = document.querySelector('.close span');
 
             // Mobile menu open
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
             if (menuBtn && sidebar) {
                 menuBtn.addEventListener('click', () => {
                     sidebar.classList.add('show');
                 });
             }
+<<<<<<< HEAD
+=======
 
             // Mobile menu close
+>>>>>>> 5956a9d688f20c9f810a5b792a0d13d8a74ecb03
             if (closeBtn && sidebar) {
                 closeBtn.addEventListener('click', () => {
                     sidebar.classList.remove('show');
