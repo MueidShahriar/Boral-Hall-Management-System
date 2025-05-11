@@ -60,8 +60,7 @@ h5 {
     font-size: 0.77rem;
 }
 
-p,
-small {
+p, small {
     color: var(--clr-dark-variant);
 }
 
