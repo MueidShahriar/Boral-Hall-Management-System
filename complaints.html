@@ -9,6 +9,7 @@
     <!-- Google Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link rel="shortcut icon" href="images/BAUET-Logo.png" type="image/x-icon" />
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -37,10 +38,10 @@
             }
         }
     </script>
-    
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-        
+
         /* === Root Variables === */
         :root {
             --clr-primary: #7380ec;
@@ -65,7 +66,7 @@
             --card-padding: 1.8rem;
             --shadow: 0 2rem 3rem var(--clr-light);
         }
-        
+
         /* === Reset & Base === */
         * {
             margin: 0;
@@ -74,7 +75,7 @@
             list-style: none;
             text-decoration: none;
         }
-        
+
         body {
             font-family: 'Poppins', sans-serif;
             background: white;
@@ -84,11 +85,12 @@
             width: 100vw;
             height: 100vh;
             margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-    width: 100vw;
-    height: 100vh;
+            padding: 0;
+            overflow-x: hidden;
+            width: 100vw;
+            height: 100vh;
         }
+
         .container {
             display: grid;
             width: 100%;
@@ -102,19 +104,20 @@
             box-sizing: border-box;
             overflow-x: hidden;
         }
+
         .aside {
-    grid-area: sidebar;
-    height: 100vh;
-    position: sticky;
-    top: 0;
-    background: var(--clr-white);
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease-in-out;
-    z-index: 10;
-    padding-left: 0;
-    margin-left: 0;
-    justify-self: start;
-}
+            grid-area: sidebar;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            background: var(--clr-white);
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+            z-index: 10;
+            padding-left: 0;
+            margin-left: 0;
+            justify-self: start;
+        }
 
         .aside .top {
             display: flex;
@@ -146,19 +149,21 @@
             padding-top: 1rem;
             height: 85vh;
         }
+
         .sidebar a {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem; /* Increased gap between icon and text */
-    font-size: 0.7rem; /* Slightly larger base font size */
-    padding: 0.5rem; /* More padding for larger click area */
-    color: var(--clr-dark);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: var(--radius-1);
-    background: var(--clr-white);
-    margin-bottom: 0.3rem; /* More space between menu items */
-    transition: background 0.2s, color 0.2s;
-}
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            padding: 0.3rem;
+            font-weight: 700;
+            color: var(--clr-dark);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--radius-1);
+            background: var(--clr-white);
+            margin-bottom: 0.1rem;
+            transition: background 0.2s, color 0.2s;
+        }
 
         .sidebar a:hover {
             background: rgba(115, 128, 236, 0.1);
@@ -179,93 +184,98 @@
         .sidebar a:hover span {
             margin-left: 0.25rem;
         }
-        .sidebar a h3 {
-    font-size: 0.9rem; /* Larger text */
-    font-weight: 600; /* Bolder text */
-}
 
-.sidebar a.Active h3 {
-    font-weight: 700; /* Even bolder for active item */
-}
-        
+        .sidebar a h3 {
+            font-size: 0.9rem;
+            /* Larger text */
+            font-weight: 600;
+            /* Bolder text */
+        }
+
+        .sidebar a.Active h3 {
+            font-weight: 700;
+            /* Even bolder for active item */
+        }
+
         .sidebar .rsm {
             font-size: 0.78rem;
             font-weight: 600;
             margin-left: 1rem;
             color: rgba(31, 31, 164, 0.996);
         }
+
         main {
-    grid-area: main;
-    position: relative;
-    padding-top: 5rem; /* Space for the right panel on top */
-    justify-self: center;
-    width: 95%;
-    max-width: 1400px;
-    margin: 1rem auto;
-    background: var(--clr-bg);
-    border-radius: var(--radius-2);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
-    padding: 2.5rem 2rem 2rem 2rem;
-    min-height: 80vh;
-    transition: background 0.3s;
-}
+            grid-area: main;
+            position: relative;
+            padding-top: 5rem;
+            /* Space for the right panel on top */
+            justify-self: center;
+            width: 95%;
+            max-width: 1400px;
+            margin: 1rem auto;
+            background: var(--clr-bg);
+            border-radius: var(--radius-2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
+            padding: 2.5rem 2rem 2rem 2rem;
+            min-height: 80vh;
+            transition: background 0.3s;
+        }
 
-main h2 {
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: var(--clr-primary-variant);
-    margin-bottom: 2rem;
-    letter-spacing: 1.5px;
-    text-align: center;
-    text-transform: uppercase;
-    width: 100%;
-    position: relative;
-    padding-bottom: 0.8rem;
-}
+        main h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--clr-primary-variant);
+            margin-bottom: 2rem;
+            letter-spacing: 1.5px;
+            text-align: center;
+            text-transform: uppercase;
+            width: 100%;
+            position: relative;
+            padding-bottom: 0.8rem;
+        }
 
-/* Add decorative underline to heading */
-main h2::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    transform: translateX(-50%);
-    height: 4px;
-    width: 100px;
-    background: var(--clr-primary);
-    border-radius: 2px;
-}
+        /* Add decorative underline to heading */
+        main h2::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            height: 4px;
+            width: 100px;
+            background: var(--clr-primary);
+            border-radius: 2px;
+        }
 
-/* Make complaint card headings (h5) more prominent as well */
-.complaint-card h5 {
-    color: var(--clr-primary-variant);
-    font-weight: 700;
-    font-size: 1.4rem;
-    margin-bottom: 1rem;
-    letter-spacing: 0.5px;
-}
-        
-        /* === Right Panel === */
-/* === Right Panel === */
-.right {
-    position: fixed; /* Changed from absolute to fixed */
-    top: 0;
-    right: 0;
-    width: auto;
-    z-index: 100;
-    margin: 0.5rem 1rem;
-}
+        .complaint-card h5 {
+            color: var(--clr-primary-variant);
+            font-weight: 700;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            letter-spacing: 0.5px;
+        }
 
-.right .top {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    background: var(--clr-white);
-    padding: 0.5rem;
-    border-radius: var(--radius-1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    height: 3rem;
-}
+        .right {
+            position: fixed;
+            /* Changed from absolute to fixed */
+            top: 0;
+            right: 0;
+            width: auto;
+            z-index: 100;
+            margin: 0.5rem 1rem;
+        }
+
+        .right .top {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            background: var(--clr-white);
+            padding: 0.5rem;
+            border-radius: var(--radius-1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            height: 3rem;
+        }
+
         .notification-btn,
         .logout-btn {
             background: none;
@@ -280,17 +290,19 @@ main h2::after {
         .logout-btn:hover {
             color: var(--clr-danger);
         }
-        
+
         .profile-photo img {
             width: 2.4rem;
             height: 2.4rem;
             border-radius: 50%;
             object-fit: cover;
         }
-        
-.right .top button {
-    margin: 0 0.6rem; /* Add horizontal space between buttons */
-}
+
+        .right .top button {
+            margin: 0 0.6rem;
+            /* Add horizontal space between buttons */
+        }
+
         #menu_bar {
             display: none;
             background: none;
@@ -299,14 +311,16 @@ main h2::after {
             font-size: 1.5rem;
             color: var(--clr-dark);
         }
+
         .complaint-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    margin: 0 auto;
-    width: 100%;
-    max-width: 1200px; /* Set a max width for better readability */
-}
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 1200px;
+            /* Set a max width for better readability */
+        }
 
         /* === Animation for expanded cards === */
         .complaint-card {
@@ -320,6 +334,7 @@ main h2::after {
             display: flex;
             flex-direction: column;
         }
+
         .solved-btn {
             background: rgb(2, 81, 2);
             color: white;
@@ -330,6 +345,7 @@ main h2::after {
             cursor: pointer;
             transition: all 0.3s ease;
         }
+
         .solved-btn:hover {
             background: var(--clr-primary-variant);
             transform: translateY(-2px);
@@ -345,50 +361,53 @@ main h2::after {
         .complaint-card p {
             margin-bottom: 0.5rem;
         }
+
         .complaint-description {
             transition: opacity 0.3s ease;
         }
+
         @media screen and (max-width: 1200px) {
-    .container {
-        grid-template-columns: 7rem 1fr;
-    }
-}
-@media screen and (max-width: 768px) {
-    .container {
-        grid-template-areas: 
-            "main"
-            "main";
-        grid-template-columns: 1fr;
-    }
-    
-    .aside {
-        position: fixed;
-        transform: translateX(-100%);
-    }
-    
-    .aside.show {
-        transform: translateX(0);
-    }
-    
-    main {
-        padding-top: 5rem;
-    }
-    
-    .right {
-        width: 100%;
-        position: fixed;
-        top: 0;
-        right: 0;
-        background: var(--clr-white);
-        margin: 0;
-        padding: 0 1rem;
-    }
-    
-    #menu_bar {
-        display: inline-block;
-    }
-}
-        
+            .container {
+                grid-template-columns: 7rem 1fr;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .container {
+                grid-template-areas:
+                    "main"
+                    "main";
+                grid-template-columns: 1fr;
+            }
+
+            .aside {
+                position: fixed;
+                transform: translateX(-100%);
+            }
+
+            .aside.show {
+                transform: translateX(0);
+            }
+
+            main {
+                padding-top: 5rem;
+            }
+
+            .right {
+                width: 100%;
+                position: fixed;
+                top: 0;
+                right: 0;
+                background: var(--clr-white);
+                margin: 0;
+                padding: 0 1rem;
+            }
+
+            #menu_bar {
+                display: inline-block;
+            }
+        }
+
         /* === Complaint Grid === */
         .complaint-grid {
             display: grid;
@@ -396,17 +415,18 @@ main h2::after {
             gap: 2rem;
             margin-bottom: 2rem;
         }
-        @media (max-width: 992px) {
-    .complaint-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
 
-@media (max-width: 600px) {
-    .complaint-grid {
-        grid-template-columns: 1fr;
-    }
-}
+        @media (max-width: 992px) {
+            .complaint-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .complaint-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 
@@ -487,7 +507,7 @@ main h2::after {
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
         import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
         import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-    
+
         // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBF-nMMW5lG44JfHxx4HxCbf5N81geOiRs",
@@ -498,7 +518,7 @@ main h2::after {
             messagingSenderId: "200038506273",
             appId: "1:200038506273:web:2e141fc9ec36de049ae860"
         };
-    
+
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -523,31 +543,31 @@ main h2::after {
                 window.location.href = "LoginRegister.html";
             }
         };
-    
+
         // Function to load complaints from Firestore
         async function loadComplaints() {
-    const container = document.getElementById("complaints-container");
-    container.innerHTML = ""; // Clear the container before loading complaints
+            const container = document.getElementById("complaints-container");
+            container.innerHTML = ""; // Clear the container before loading complaints
 
-    try {
-        // Fetch complaints from the "Complaints" collection in Firestore
-        const querySnapshot = await getDocs(collection(firestore, "Complaints"));
-        querySnapshot.forEach((doc) => {
-            const complaint = doc.data();
-            const docId = doc.id;  // Get complaint data
+            try {
+                // Fetch complaints from the "Complaints" collection in Firestore
+                const querySnapshot = await getDocs(collection(firestore, "Complaints"));
+                querySnapshot.forEach((doc) => {
+                    const complaint = doc.data();
+                    const docId = doc.id;  // Get complaint data
 
-            // Ensure all required fields are present
-            const subject = complaint.subject || "No Subject";
-            const description = complaint.description || "No Description";
-            const room = complaint.roomNumber || "No Room";
-            const id = complaint.userId || "No ID";
+                    // Ensure all required fields are present
+                    const subject = complaint.subject || "No Subject";
+                    const description = complaint.description || "No Description";
+                    const room = complaint.roomNumber || "No Room";
+                    const id = complaint.userId || "No ID";
 
-            const card = document.createElement("div");
-            card.className = "complaint-card";
-            card.id = `card-${doc.id}`;
-            
-            // Modified card HTML to include the button with proper styling
-            card.innerHTML = `
+                    const card = document.createElement("div");
+                    card.className = "complaint-card";
+                    card.id = `card-${doc.id}`;
+
+                    // Modified card HTML to include the button with proper styling
+                    card.innerHTML = `
                 <h5>${subject}</h5>
                 <p><b>Room:</b> ${room}</p>
                 <p><b>ID:</b> ${id}</p>
@@ -558,56 +578,56 @@ main h2::after {
                     <button class="solved-btn" onclick="markAsSolved('${doc.id}', event)">Solved</button>
                 </div>
             `;
-            
-            card.onclick = function(e) {
-                // Don't toggle the complaint if the button was clicked
-                if (!e.target.classList.contains('solved-btn')) {
-                    toggleComplaint(doc.id);
-                }
-            };
-            
-            container.appendChild(card);
-        });
-    } catch (error) {
-        console.error("Error loading complaints:", error.message);
-        alert("Failed to load complaints. Please try again.");
-    }
-}
 
-// 3. Add the markAsSolved function to the window object
-window.markAsSolved = async function(id, event) {
-    // Stop the click event from propagating to the card
-    if (event) {
-        event.stopPropagation();
-    }
-    
-    try {
-        // Reference to the specific complaint document
-        const complaintRef = doc(firestore, "Complaints", id);
-        
-        // Delete the document from Firestore
-        await deleteDoc(complaintRef);
-        
-        // Remove the card from the UI with animation
-        const card = document.getElementById(`card-${id}`);
-        if (card) {
-            card.style.opacity = '0';
-            card.style.transform = 'scale(0.8)';
-            
-            // After animation completes, remove the card
-            setTimeout(() => {
-                card.remove();
-            }, 300);
+                    card.onclick = function (e) {
+                        // Don't toggle the complaint if the button was clicked
+                        if (!e.target.classList.contains('solved-btn')) {
+                            toggleComplaint(doc.id);
+                        }
+                    };
+
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error("Error loading complaints:", error.message);
+                alert("Failed to load complaints. Please try again.");
+            }
         }
-        
-        // Show success message
-        alert("Complaint marked as solved and removed!");
-    } catch (error) {
-        console.error("Error removing complaint:", error);
-        alert("Failed to mark complaint as solved. Please try again.");
-    }
-};
-        // Function to toggle complaint description visibility
+
+        // 3. Add the markAsSolved function to the window object
+        window.markAsSolved = async function (id, event) {
+            // Stop the click event from propagating to the card
+            if (event) {
+                event.stopPropagation();
+            }
+
+            try {
+                // Reference to the specific complaint document
+                const complaintRef = doc(firestore, "Complaints", id);
+
+                // Delete the document from Firestore
+                await deleteDoc(complaintRef);
+
+                // Remove the card from the UI with animation
+                const card = document.getElementById(`card-${id}`);
+                if (card) {
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.8)';
+
+                    // After animation completes, remove the card
+                    setTimeout(() => {
+                        card.remove();
+                    }, 300);
+                }
+
+                // Show success message
+                alert("Complaint marked as solved and removed!");
+            } catch (error) {
+                console.error("Error removing complaint:", error);
+                alert("Failed to mark complaint as solved. Please try again.");
+            }
+        };
+       
         window.toggleComplaint = function (id) {
             document.querySelectorAll('.complaint-description').forEach(desc => {
                 const parentCard = desc.closest('.complaint-card');
@@ -621,7 +641,7 @@ window.markAsSolved = async function(id, event) {
             });
             const description = document.getElementById(`description-${id}`);
             const card = description.closest(".complaint-card");
-            
+
             if (description.classList.contains("hidden")) {
                 description.classList.remove("hidden");
                 setTimeout(() => {
@@ -636,15 +656,14 @@ window.markAsSolved = async function(id, event) {
                 }, 300);
             }
         };
-        
+
         const urlParams = new URLSearchParams(window.location.search);
         const studentId = urlParams.get('id');
         document.querySelector("[title='Profile']").onclick = function () {
             window.location.href = `profile.html?id=${studentId}`;
         };
-    
-        // Load complaints on page load
-        document.addEventListener("DOMContentLoaded", function() {
+
+        document.addEventListener("DOMContentLoaded", function () {
             loadComplaints();
             const menuBtn = document.getElementById('menu_bar');
             const sidebar = document.querySelector('.aside');
@@ -666,4 +685,5 @@ window.markAsSolved = async function(id, event) {
         });
     </script>
 </body>
+
 </html>
