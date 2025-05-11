@@ -61,7 +61,11 @@ form {
 .input-group i.fa-user,
 .input-group i.fa-phone,
 .input-group i.fa-calendar,
-.input-group i.fa-map-marker-alt {
+.input-group i.fa-map-marker-alt,
+.input-group i.fa-id-card,
+.input-group i.fa-graduation-cap,
+.input-group i.fa-users,
+.input-group i.fa-home {
     position: absolute;
     top: 10px;
     left: 0;
@@ -92,7 +96,7 @@ input::placeholder {
 label {
     color: #6a6969;
     position: relative;
-    left: 1.2em;
+    left: 1.3em;
     top: -1.3em;
     cursor: auto;
     transition: 0.3s ease all;
