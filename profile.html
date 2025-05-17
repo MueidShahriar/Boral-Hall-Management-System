@@ -758,7 +758,7 @@
                     signOut(auth)
                         .then(() => {                        
                             sessionStorage.clear();                          
-                            window.location.href = "login.html";
+                            window.location.href = "LoginRegister.html";
                         })
                         .catch((error) => {
                             console.error("Error during logout:", error.message);
@@ -771,7 +771,7 @@
         window.onload = function () {
             if (performance.navigation.type === 2) {
                 sessionStorage.clear();
-                window.location.href = "login.html";
+                window.location.href = "LoginRegister.html";
             }
         };
 
