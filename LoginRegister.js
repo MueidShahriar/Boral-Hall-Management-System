@@ -11,14 +11,14 @@ import {
   get,
   child
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
-import { 
-  getFirestore, 
-  collection, 
-  doc, 
-  getDoc, 
-  updateDoc, 
-  setDoc, 
-  serverTimestamp 
+import {
+  getFirestore,
+  collection,
+  doc,
+  getDoc,
+  updateDoc,
+  setDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -65,14 +65,14 @@ function isValidRoomNumber(roomNumber) {
 
 async function createNewRoom(roomNumber) {
   const roomRef = doc(firestore, "room", roomNumber);
-  
+
   await setDoc(roomRef, {
     created: serverTimestamp(),
     roomNumber: roomNumber
   });
-  
+
   const memberCollectionRef = collection(roomRef, "members");
-  
+
   for (let i = 1; i <= 6; i++) {
     const seatRef = doc(memberCollectionRef, `seat${i}`);
     await setDoc(seatRef, {
@@ -108,26 +108,26 @@ signUpForm.addEventListener("submit", async (e) => {
   try {
     const roomRef = doc(firestore, "room", room);
     const roomSnapshot = await getDoc(roomRef);
-    
+
     if (!roomSnapshot.exists()) {
       if (!isValidRoomNumber(room)) {
         alert(`Room ${room} is not a valid room number. Please enter a valid room number.`);
         return;
       }
-      
+
       await createNewRoom(room);
     }
-    
+
     let seatAssigned = false;
     let assignedSeat = "";
-    
+
     for (let i = 1; i <= 6; i++) {
       const seatRef = doc(roomRef, `members/seat${i}`);
       const seatSnapshot = await getDoc(seatRef);
-      
+
       if (!seatSnapshot.exists() || seatSnapshot.data().isEmpty === true) {
         assignedSeat = `seat${i}`;
-        
+
         await setDoc(seatRef, {
           id: studentID,
           name: name,
@@ -136,20 +136,20 @@ signUpForm.addEventListener("submit", async (e) => {
           isEmpty: false,
           lastUpdated: serverTimestamp()
         });
-        
+
         seatAssigned = true;
         break;
       }
     }
-    
+
     if (!seatAssigned) {
       alert(`Room ${room} is full. Please select a different room.`);
       return;
     }
-    
+
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-    
+
     await set(ref(database, `users/${studentID}`), {
       name: name,
       email: email,
@@ -165,12 +165,12 @@ signUpForm.addEventListener("submit", async (e) => {
       role: "member",
       id: studentID
     });
-    
+
     alert(`Registered successfully! Welcome ${name}!`);
     signUpForm.reset();
     signInContainer.style.display = "block";
     signUpContainer.style.display = "none";
-    
+
   } catch (error) {
     console.error("Registration error:", error);
     alert("Error during registration: " + error.message);
@@ -178,9 +178,9 @@ signUpForm.addEventListener("submit", async (e) => {
 });
 
 const signInForm = document.getElementById("signInForm");
-signInForm.addEventListener("submit", function(e) {
+signInForm.addEventListener("submit", function (e) {
   e.preventDefault();
-  
+
   const studentId = document.getElementById('loginStudentId').value;
   const password = document.getElementById('loginPassword').value;
 
@@ -195,7 +195,7 @@ signInForm.addEventListener("submit", function(e) {
           .then((userCredential) => {
             sessionStorage.removeItem("loggedOut");
             sessionStorage.setItem("userId", studentId);
-            
+
             if (role === 'admin') {
               window.location.href = `AdminDashboard.html?id=${studentId}`;
             } else {

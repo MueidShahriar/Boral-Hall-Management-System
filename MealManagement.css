@@ -21,6 +21,14 @@
     --card-padding: 1.8rem;
     --shadow: 0 2rem 3rem var(--clr-light);
 }
+.past-date {
+    background-color: #f0f0f0;
+    opacity: 0.8;
+  }
+  
+  .past-date .meal-toggle {
+    cursor: not-allowed;
+  }
 
 * {
     margin: 0;

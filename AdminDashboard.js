@@ -2,13 +2,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const menuBtn = document.getElementById('menu_bar');
     const sidebar = document.querySelector('.aside');
     const closeBtn = document.querySelector('.close span');
-    
-    // Check for login status
+
     if (!sessionStorage.getItem("userId")) {
         window.location.replace("LoginRegister.html");
         return;
     }
-    
+
     const logout = document.querySelectorAll(".logout-btn");
     logout.forEach(button => {
         button.addEventListener("click", () => {
@@ -18,7 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Sidebar toggle functionality
     if (menuBtn) {
         menuBtn.addEventListener('click', () => {
             sidebar.classList.add('show');
@@ -30,18 +28,15 @@ document.addEventListener("DOMContentLoaded", () => {
             sidebar.classList.remove('show');
         });
     }
-    
-    // Get admin ID from URL
+
     const urlParams = new URLSearchParams(window.location.search);
     const adminId = urlParams.get('id');
-    
-    // Debug to console
+
     console.log("Admin ID:", adminId);
     console.log("Navigation links:", document.querySelectorAll('.sidebar a:not(.logout-btn)').length);
     console.log("Action buttons:", document.querySelectorAll('.action-btn').length);
-    
+
     if (adminId) {
-        // Update navigation links
         const navLinks = document.querySelectorAll('.sidebar a:not(.logout-btn)');
         navLinks.forEach(link => {
             const href = link.getAttribute('href');
@@ -53,28 +48,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
         });
-        
-        // Handle action buttons with more explicit debugging
+
         const actionButtons = document.querySelectorAll('.action-btn');
         console.log("Found action buttons:", actionButtons.length);
-        
+
         actionButtons.forEach((button, index) => {
             console.log(`Button ${index} attached`);
-            
-            button.addEventListener('click', function() {
+
+            button.addEventListener('click', function () {
                 const card = this.closest('.card');
                 if (!card) {
                     console.error("No parent card found for button");
                     return;
                 }
-                
+
                 console.log("Card classes:", card.classList);
                 const cardType = card.classList[1];
                 console.log("Card type:", cardType);
-                
+
                 let targetPage = '';
-                
-                // Map card types to pages
+
                 switch (cardType) {
                     case 'request':
                         targetPage = 'requests.html';
@@ -98,17 +91,16 @@ document.addEventListener("DOMContentLoaded", () => {
                         console.error("Unknown card type:", cardType);
                         return;
                 }
-                
+
                 console.log("Navigating to:", `${targetPage}?id=${adminId}`);
                 window.location.href = `${targetPage}?id=${adminId}`;
             });
         });
     }
 
-    // Direct navigation for complaint and room buttons (as a backup)
     const complaintButton = document.querySelector('.card.complaint .action-btn');
     if (complaintButton) {
-        complaintButton.addEventListener('click', function() {
+        complaintButton.addEventListener('click', function () {
             console.log("Complaint button clicked directly");
             window.location.href = adminId ? `complaints.html?id=${adminId}` : 'complaints.html';
         });
@@ -116,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const roomButton = document.querySelector('.card.allocation .action-btn');
     if (roomButton) {
-        roomButton.addEventListener('click', function() {
+        roomButton.addEventListener('click', function () {
             console.log("Room allocation button clicked directly");
             window.location.href = adminId ? `room.html?id=${adminId}` : 'room.html';
         });

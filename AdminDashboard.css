@@ -214,7 +214,7 @@ main .dashboard {
     align-items: center;
     gap: 1rem;
     transition: 0.3s ease;
-    
+
 }
 
 .card:hover {
@@ -332,8 +332,8 @@ main .dashboard {
 }
 
 .profile-photo :hover {
-    transform: scale(1.2); 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    transform: scale(1.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 #menu_bar {
@@ -399,6 +399,7 @@ main .dashboard {
         padding: 0 1rem;
         z-index: 2;
     }
+
     .notification,
     .logout-btn {
         display: none;
@@ -422,7 +423,8 @@ main .dashboard {
     background: transparent;
 }
 
-#prevMonth, #nextMonth {
+#prevMonth,
+#nextMonth {
     background: var(--clr-primary --clr-primary-variant);
     color: var(--clr-white);
     padding: 0.5rem 1rem;
@@ -430,28 +432,29 @@ main .dashboard {
     transition: background-color 0.3s, transform 0.3s;
 }
 
-#prevMonth:hover, #nextMonth:hover {
+#prevMonth:hover,
+#nextMonth:hover {
     background: rgb(48, 48, 191);
     transform: translateY(-2px);
 }
 
 .submitMeals {
-  display: block;
-  margin: 0 auto;
-  background-color: rgba(9, 117, 29, 0.854);
-  color: var(--clr-white);
-  padding: 0.5rem 1rem;
-  margin-bottom: 1rem;
-  border-radius: var(--radius-2);
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.3s;
+    display: block;
+    margin: 0 auto;
+    background-color: rgba(9, 117, 29, 0.854);
+    color: var(--clr-white);
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: var(--radius-2);
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
 }
 
 .submitMeals:hover {
-  background-color: rgb(6, 68, 6);
-  transform: translateY(-2px);
+    background-color: rgb(6, 68, 6);
+    transform: translateY(-2px);
 }
 
 #monthLabel {
@@ -491,7 +494,7 @@ main .dashboard {
 
 #totalCost {
     font-family: 'Poppins', sans-serif;
-    color:green;
+    color: green;
     font-weight: bold;
     margin-top: 1rem;
     font-size: 2rem;
@@ -502,6 +505,7 @@ main .dashboard {
         grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
     }
+
     .flex.justify-between {
         flex-direction: column;
         gap: 1rem;
