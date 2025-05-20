@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    const attendanceButton = document.querySelector('.card attendance .action-btn');
+    const attendanceButton = document.querySelector('.card.attendance .action-btn');
     if (attendanceButton) {
         attendanceButton.addEventListener('click', function () {
             console.log("Attendance button clicked directly");
