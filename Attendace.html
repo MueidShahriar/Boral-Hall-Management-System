@@ -501,10 +501,10 @@
     <script type="module">
         // Import Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+        import { getFirestore, collection, getDocs, doc, getDoc, collectionGroup, query, where } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
         import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-        // Firebase configuration (same as LoginRegister.js)
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBF-nMMW5lG44JfHxx4HxCbf5N81geOiRs",
             authDomain: "bauet-hms-63f5b.firebaseapp.com",
@@ -517,7 +517,7 @@
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        const db = getFirestore(app);
         const auth = getAuth(app);
 
         // Logout functionality
@@ -553,7 +553,6 @@
                 });
             }
 
-            // Load initial attendance data
             showAttendance();
         });
 
@@ -563,8 +562,7 @@
             return d.toISOString().split('T')[0];
         }
 
-        // Optionally, add a date picker for attendance
-        // Insert after attendance-view select
+        // Add date picker for attendance
         document.addEventListener("DOMContentLoaded", function () {
             const optionsDiv = document.querySelector('.attendance-options');
             if (optionsDiv && !document.getElementById('attendance-date')) {
@@ -578,118 +576,266 @@
             }
         });
 
+        // Format date for display
+        function formatDate(dateString) {
+            if (!dateString) return "-";
+            const date = new Date(dateString);
+            return date.toLocaleDateString([], { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
         // Main attendance display function
         async function showAttendance() {
             const view = document.getElementById('attendance-view').value;
             const display = document.getElementById('attendance-display');
             const date = document.getElementById('attendance-date') ? document.getElementById('attendance-date').value : getTodayDate();
-            let tableContent = '';
+            
+            console.log(`Showing attendance for date: ${date}, view mode: ${view}`);
+            display.innerHTML = '<p>Loading attendance data...</p>';
 
             try {
-                const dbRef = ref(db);
-                // Assume attendance is stored as: attendance/{date}/{studentId}: {name, id, room, status}
-                const snapshot = await get(child(dbRef, `attendance/${date}`));
-
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    let filtered = Object.values(data);
-
-                    if (view === 'roomwise') {
-                        // Group by room
-                        const grouped = {};
-                        filtered.forEach(item => {
-                            if (!grouped[item.room]) grouped[item.room] = [];
-                            grouped[item.room].push(item);
-                        });
-                        tableContent = Object.entries(grouped).map(([room, students]) => `
-                            <h3 style="margin-top:1.5rem;">Room ${room}</h3>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>ID</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${students.map(item => `
-                                        <tr>
-                                            <td>${item.name || "-"}</td>
-                                            <td>${item.id || "-"}</td>
-                                            <td>${item.status || "-"}</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        `).join('');
-                    } else if (view === 'floorwise') {
-                        // Group by floor (first digit of room number)
-                        const grouped = {};
-                        filtered.forEach(item => {
-                            const floor = item.room ? String(item.room)[0] : "N/A";
-                            if (!grouped[floor]) grouped[floor] = [];
-                            grouped[floor].push(item);
-                        });
-                        tableContent = Object.entries(grouped).map(([floor, students]) => `
-                            <h3 style="margin-top:1.5rem;">Floor ${floor}</h3>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Room</th>
-                                        <th>ID</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${students.map(item => `
-                                        <tr>
-                                            <td>${item.name || "-"}</td>
-                                            <td>${item.room || "-"}</td>
-                                            <td>${item.id || "-"}</td>
-                                            <td>${item.status || "-"}</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        `).join('');
-                    } else if (view === 'allstudent') {
+                // Get all student attendance records for the selected date
+                const attendanceData = await fetchAttendanceData(date);
+                console.log(`Retrieved ${attendanceData.length} attendance records`);
+                let tableContent = '';
+                
+                if (attendanceData.length > 0) {
+                    // First, show summary block
+                    const summaryBlock = `
+                        <div style="background-color: #f0f4f8; padding: 1.5rem; border-radius: 10px; margin-bottom: 2rem; border-left: 5px solid var(--clr-primary);">
+                            <h3 style="color: var(--clr-primary-variant); font-size: 1.2rem; margin-bottom: 0.5rem;">
+                                Attendance Summary for ${formatDate(date)}
+                            </h3>
+                            <p style="font-size: 1rem; margin-top: 1rem;">
+                                <strong>Total Students Present:</strong> ${attendanceData.length}
+                            </p>
+                        </div>
+                    `;
+                    
+                    if (view === 'allstudent') {
+                        // Simple list of all students who marked attendance
                         tableContent = `
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Room</th>
-                                        <th>ID</th>
-                                        <th>Status</th>
+                                        <th>Student ID</th>
+                                        <th>Time</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${filtered.map(item => `
+                                    ${attendanceData.map(record => `
                                         <tr>
-                                            <td>${item.name || "-"}</td>
-                                            <td>${item.room || "-"}</td>
-                                            <td>${item.id || "-"}</td>
-                                            <td>${item.status || "-"}</td>
+                                            <td>${record.studentId}</td>
+                                            <td>${formatTime(record.timestamp)}</td>
                                         </tr>
                                     `).join('')}
                                 </tbody>
                             </table>
                         `;
+                    } else {
+                        // For roomwise or floorwise, show the total count only
+                        tableContent = `
+                            <div style="text-align: center; padding: 2rem; background: #f9f9f9; border-radius: var(--radius-2);">
+                                <p style="font-size: 1.2rem;">
+                                    Detailed ${view === 'roomwise' ? 'room' : 'floor'} information not available.
+                                </p>
+                                <p style="margin-top: 1rem; color: var(--clr-dark-variant);">
+                                    Student details are stored with their IDs. To view details by room or floor, 
+                                    additional student information needs to be linked with attendance records.
+                                </p>
+                            </div>
+                        `;
                     }
+                    
+                    display.innerHTML = summaryBlock + tableContent;
                 } else {
-                    tableContent = '<p>No attendance data available for this date.</p>';
+                    display.innerHTML = `
+                        <div style="text-align: center; padding: 3rem; background: #f9f9f9; border-radius: var(--radius-2);">
+                            <h3 style="font-size: 1.5rem; color: var(--clr-primary-variant);">
+                                No Attendance Records Found
+                            </h3>
+                            <p style="margin-top: 1rem; color: var(--clr-dark-variant);">
+                                No students have marked their attendance for ${formatDate(date)}.
+                            </p>
+                        </div>
+                    `;
                 }
             } catch (error) {
                 console.error("Error fetching attendance data:", error);
-                tableContent = '<p>Error loading attendance data</p>';
+                display.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; background: #f9f9f9; border-radius: var(--radius-2); border: 1px solid #ff6b6b;">
+                        <h3 style="font-size: 1.5rem; color: #e74c3c;">
+                            Error Loading Data
+                        </h3>
+                        <p style="margin-top: 1rem; color: var(--clr-dark-variant);">
+                            ${error.message || "An error occurred while fetching the attendance data."}
+                        </p>
+                    </div>
+                `;
             }
-
-            display.innerHTML = tableContent;
+        }
+        
+        // Format time from ISO string
+        function formatTime(isoString) {
+            if (!isoString) return "-";
+            const date = new Date(isoString);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+        
+        // Replace the fetchAttendanceData function with this fixed version
+        async function fetchAttendanceData(dateString) {
+            try {
+                console.log(`Fetching attendance data for date: ${dateString}`);
+                const attendanceData = [];
+                
+                // Important: Make sure the date string is in YYYY-MM-DD format for Firestore
+                // Sometimes the browser date input can return a different format
+                let formattedDate = dateString;
+                if (dateString.includes('/')) {
+                    // Convert MM/DD/YYYY to YYYY-MM-DD if needed
+                    const dateParts = dateString.split('/');
+                    formattedDate = `${dateParts[2]}-${dateParts[0].padStart(2, '0')}-${dateParts[1].padStart(2, '0')}`;
+                }
+                
+                console.log(`Formatted date for query: ${formattedDate}`);
+                
+                // Get all student IDs that have attendance records
+                const attendanceCollectionRef = collection(db, "attendance");
+                const studentDocsSnapshot = await getDocs(attendanceCollectionRef);
+                
+                console.log(`Found ${studentDocsSnapshot.size} student documents in attendance collection`);
+                
+                // For each student ID, fetch their attendance for the given date
+                const fetchPromises = [];
+                
+                studentDocsSnapshot.forEach(studentDoc => {
+                    const studentId = studentDoc.id;
+                    console.log(`Checking attendance for student: ${studentId}`);
+                    
+                    // Try with different date formats if the first one doesn't work
+                    const dateFormats = [
+                        formattedDate,                                      // YYYY-MM-DD (standard)
+                        dateString,                                         // Original input
+                        new Date(dateString).toISOString().split('T')[0]    // Convert to ISO and take date part
+                    ];
+                    
+                    // Try each date format
+                    for (const format of dateFormats) {
+                        const dateDocRef = doc(db, "attendance", studentId, "attendance_by_date", format);
+                        
+                        fetchPromises.push(
+                            getDoc(dateDocRef).then(dateDoc => {
+                                if (dateDoc.exists()) {
+                                    console.log(`✅ Success! Found record for student ${studentId} on date ${format}`);
+                                    const data = dateDoc.data();
+                                    attendanceData.push({
+                                        studentId: studentId,
+                                        timestamp: data.timestamp,
+                                        latitude: data.latitude,
+                                        longitude: data.longitude,
+                                        format: format // For debugging
+                                    });
+                                }
+                            }).catch(err => {
+                                console.error(`Error fetching attendance for student ${studentId} with format ${format}:`, err);
+                            })
+                        );
+                    }
+                });
+                
+                await Promise.all(fetchPromises);
+                console.log(`Total attendance records found: ${attendanceData.length}`);
+                // Remove duplicates (in case we found the same record with multiple date formats)
+                const uniqueAttendance = attendanceData.filter((item, index, self) =>
+                    index === self.findIndex((t) => t.studentId === item.studentId)
+                );
+                console.log(`After removing duplicates: ${uniqueAttendance.length} records`);
+                console.log(uniqueAttendance);
+                return uniqueAttendance;
+                
+            } catch (error) {
+                console.error("Error fetching attendance data:", error);
+                throw error;
+            }
         }
 
         // Make showAttendance globally available for select onchange
         window.showAttendance = showAttendance;
+        // Add this function to check all student attendance dates in Firestore
+async function debugAllAttendanceDates() {
+    try {
+        console.log("Checking all attendance dates in Firestore...");
+        const allDates = {};
+        
+        // Get all student IDs
+        const attendanceCollectionRef = collection(db, "attendance");
+        const studentDocsSnapshot = await getDocs(attendanceCollectionRef);
+        
+        // For each student, get all their attendance dates
+        for (const studentDoc of studentDocsSnapshot.docs) {
+            const studentId = studentDoc.id;
+            console.log(`Checking dates for student: ${studentId}`);
+            
+            // Get all dates in the attendance_by_date subcollection
+            const datesCollectionRef = collection(db, "attendance", studentId, "attendance_by_date");
+            const datesSnapshot = await getDocs(datesCollectionRef);
+            
+            console.log(`Found ${datesSnapshot.size} dates for student ${studentId}`);
+            
+            // Store each date
+            datesSnapshot.forEach(dateDoc => {
+                const dateId = dateDoc.id;
+                if (!allDates[dateId]) {
+                    allDates[dateId] = [];
+                }
+                allDates[dateId].push(studentId);
+            });
+        }
+        
+        // Log all unique date formats found
+        console.log("All attendance dates found in Firestore:");
+        for (const [date, students] of Object.entries(allDates)) {
+            console.log(`Date: ${date}, Students: ${students.length}`);
+        }
+        
+    } catch (error) {
+        console.error("Error during date debugging:", error);
+    }
+}
+
+// Call this from the browser console to debug
+window.debugAllAttendanceDates = debugAllAttendanceDates;
+
+        // Add this helper function to debug date formats
+        function debugDateFormat() {
+            const inputDate = document.getElementById('attendance-date').value;
+            console.log(`Input date: ${inputDate}`);
+            console.log(`Formatted for query: ${inputDate}`); 
+            
+            // Check if the student document and date document exist
+            const attendanceCollectionRef = collection(db, "attendance");
+            getDocs(attendanceCollectionRef).then(snapshot => {
+                if (!snapshot.empty) {
+                    const firstStudentId = snapshot.docs[0].id;
+                    console.log(`First student ID: ${firstStudentId}`);
+                    
+                    const dateDocRef = doc(db, "attendance", firstStudentId, "attendance_by_date", inputDate);
+                    getDoc(dateDocRef).then(dateDoc => {
+                        console.log(`Date document exists: ${dateDoc.exists()}`);
+                        if (dateDoc.exists()) {
+                            console.log(`Date document data:`, dateDoc.data());
+                        }
+                    });
+                }
+            });
+        }
+
+        // Call this function when the date input changes
+        document.addEventListener("DOMContentLoaded", function() {
+            const dateInput = document.getElementById('attendance-date');
+            if (dateInput) {
+                dateInput.addEventListener('change', debugDateFormat);
+            }
+        });
     </script>
 </body>
 </html>
