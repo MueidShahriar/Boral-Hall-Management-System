@@ -37,7 +37,7 @@
                     <span class="material-icons">payments</span>
                     <h3>Check Payments</h3>
                 </a>
-                <a href="GuestRoomBooking.html" class="active">
+                <a href="GuestRoomBooking.html" class="Active">
                     <span class="material-icons">hotel</span>
                     <h3>Guest Room Booking</h3>
                 </a>
@@ -68,10 +68,13 @@
         <main>
             <h1>Guest Room Booking</h1>
             <section class="room-booking-form">
-                <form action="#" method="post">
+                <div style="text-align:center; margin-bottom:1.5rem;">
+                    <h2 style="font-size:1.5rem; color:#111e88; font-weight:600; letter-spacing:1px;">Guest Information</h2>
+                </div>
+                <form id="guestRoomForm" action="#">
                     <div class="form-group">
-                        <label for="id">ID:</label>
-                        <input type="text" id="id" name="id" required>
+                        <label for="nid">NID:</label>
+                        <input type="text" id="nid" name="nid" required>
                     </div>
                     <div class="form-group">
                         <label for="name">Name:</label>
@@ -80,6 +83,16 @@
                     <div class="form-group">
                         <label for="dob">Date of Birth:</label>
                         <input type="date" id="dob" name="dob" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="relationship">Relationship</label>
+                        <select id="relationship" name="relationship" required>
+                            <option value="" disabled selected>Select relation</option>
+                            <option value="Father">Parent</option>
+                            <option value="Friend">Friend</option>
+                            <option value="Relative">Relative</option>
+                            <option value="Other">Other</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone No.:</label>
@@ -92,8 +105,7 @@
                     <div class="form-group">
                         <label for="checkin">Check-In Date:</label>
                         <input type="date" id="checkin" name="checkin" required>
-
-                        <label for="checkout">Check-Out Date:</label>
+                        <label for="checkout" style="margin-left:1rem;">Check-Out Date:</label>
                         <input type="date" id="checkout" name="checkout" required>
                     </div>
                     <button type="submit">Book Room</button>
@@ -127,3 +139,5 @@
     </div> 
     <script src="GuestRoomBooking.js"></script>
 </body>
+
+</html>
