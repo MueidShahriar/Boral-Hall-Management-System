@@ -106,6 +106,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    const attendanceButton = document.querySelector('.card.complaint .action-btn');
+    if (attendanceButton) {
+        attendanceButton.addEventListener('click', function () {
+            console.log("Attendance button clicked directly");
+            window.location.href = adminId ? `Attendance.html?id=${adminId}` : 'Attendance.html';
+        });
+    }
+
     const roomButton = document.querySelector('.card.allocation .action-btn');
     if (roomButton) {
         roomButton.addEventListener('click', function () {
