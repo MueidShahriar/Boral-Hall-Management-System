@@ -114,6 +114,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    const student_infoButton = document.querySelector('.card.student_info .action-btn');
+    if (student_infoButton) {
+        student_infoButton.addEventListener('click', function () {
+            console.log("StudentInformation button clicked directly");
+            window.location.href = adminId ? `StudentInformation.html?id=${adminId}` : 'StudentInformation.html';
+        });
+    }
+
     const roomButton = document.querySelector('.card.allocation .action-btn');
     if (roomButton) {
         roomButton.addEventListener('click', function () {
