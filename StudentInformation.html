@@ -615,19 +615,21 @@
         <!-- Right Panel -->
         <div class="right">
             <div class="top">
-                <button id="menu_bar" type="button" title="Menu">
+                <button id="menu_bar" title="Menu">
                     <span class="material-icons">menu</span>
                 </button>
-                <button class="notification-btn" title="Notifications" type="button">
+
+                <button class="notification-btn" title="Notifications">
                     <span class="material-icons">notifications</span>
                 </button>
-                <button class="logout-btn" title="Logout" type="button">
+
+                <button class="logout-btn" title="Logout">
                     <span class="material-icons">logout</span>
                 </button>
 
                 <div class="profile">
                     <div class="profile-photo" title="Profile">
-                        <img src="images/Mueid.png" alt="Profile Photo">
+                        <span class="material-icons">account_circle</span>
                     </div>
                 </div>
             </div>
@@ -747,10 +749,10 @@
                 infoSection.style.display = "none";
                 return;
             }
-            document.getElementById("name").textContent = userData.name || "Name not available";
-            document.getElementById("id").textContent = userData.id || "ID not available";
-            document.getElementById("batch").textContent = userData.batch || "Batch not available";
-            document.getElementById("roomNo").textContent = userData.room || "Room not available";
+            document.getElementById("name").textContent = userData.name || "N/A";
+            document.getElementById("id").textContent = userData.id || "---";
+            document.getElementById("batch").textContent = userData.batch || "---";
+            document.getElementById("roomNo").textContent = userData.room || "---";
             const profileUrl = userData.profile_image_url || "assets/img/profile-user.png";
             document.getElementById("profile-picture").src = profileUrl;
 
