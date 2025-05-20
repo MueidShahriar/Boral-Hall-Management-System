@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         targetPage = 'mealreport.html';
                         break;
                     case 'student_info':
-                        targetPage = 'search.html';
+                        targetPage = 'StudentInformation.html';
                         break;
                     case 'complaint':
                         targetPage = 'complaints.html';
