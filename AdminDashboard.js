@@ -3,11 +3,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const sidebar = document.querySelector('.aside');
     const closeBtn = document.querySelector('.close span');
 
+    // Authentication check
     if (!sessionStorage.getItem("userId")) {
         window.location.replace("LoginRegister.html");
         return;
     }
 
+    // Logout functionality
     const logout = document.querySelectorAll(".logout-btn");
     logout.forEach(button => {
         button.addEventListener("click", () => {
@@ -17,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // Sidebar toggle functionality
     if (menuBtn) {
         menuBtn.addEventListener('click', () => {
             sidebar.classList.add('show');
@@ -29,96 +32,57 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const adminId = urlParams.get('id');
-
-    console.log("Admin ID:", adminId);
-    console.log("Navigation links:", document.querySelectorAll('.sidebar a:not(.logout-btn)').length);
     console.log("Action buttons:", document.querySelectorAll('.action-btn').length);
 
-    if (adminId) {
-        const navLinks = document.querySelectorAll('.sidebar a:not(.logout-btn)');
-        navLinks.forEach(link => {
-            const href = link.getAttribute('href');
-            if (href && href !== '#') {
-                if (href.includes('?')) {
-                    link.setAttribute('href', `${href}&id=${adminId}`);
-                } else {
-                    link.setAttribute('href', `${href}?id=${adminId}`);
-                }
+    // Simplify action button handlers - no ID parameter needed
+    const actionButtons = document.querySelectorAll('.action-btn');
+    console.log("Found action buttons:", actionButtons.length);
+
+    actionButtons.forEach((button, index) => {
+        console.log(`Button ${index} attached`);
+
+        button.addEventListener('click', function () {
+            const card = this.closest('.card');
+            if (!card) {
+                console.error("No parent card found for button");
+                return;
             }
-        });
 
-        const actionButtons = document.querySelectorAll('.action-btn');
-        console.log("Found action buttons:", actionButtons.length);
+            console.log("Card classes:", card.classList);
+            const cardType = card.classList[1];
+            console.log("Card type:", cardType);
 
-        actionButtons.forEach((button, index) => {
-            console.log(`Button ${index} attached`);
+            let targetPage = '';
 
-            button.addEventListener('click', function () {
-                const card = this.closest('.card');
-                if (!card) {
-                    console.error("No parent card found for button");
+            switch (cardType) {
+                case 'request':
+                    targetPage = 'requests.html';
+                    break;
+                case 'attendance':
+                    targetPage = 'Attendance.html';
+                    break;
+                case 'allocation':
+                    targetPage = 'room.html';
+                    break;
+                case 'meal':
+                    targetPage = 'mealreport.html';
+                    break;
+                case 'student_info':
+                    targetPage = 'StudentInformation.html';
+                    break;
+                case 'complaint':
+                    targetPage = 'complaints.html';
+                    break;
+                default:
+                    console.error("Unknown card type:", cardType);
                     return;
-                }
+            }
 
-                console.log("Card classes:", card.classList);
-                const cardType = card.classList[1];
-                console.log("Card type:", cardType);
-
-                let targetPage = '';
-
-                switch (cardType) {
-                    case 'request':
-                        targetPage = 'requests.html';
-                        break;
-                    case 'attendance':
-                        targetPage = 'Attendance.html';
-                        break;
-                    case 'allocation':
-                        targetPage = 'room.html';
-                        break;
-                    case 'meal':
-                        targetPage = 'mealreport.html';
-                        break;
-                    case 'student_info':
-                        targetPage = 'StudentInformation.html';
-                        break;
-                    case 'complaint':
-                        targetPage = 'complaints.html';
-                        break;
-                    default:
-                        console.error("Unknown card type:", cardType);
-                        return;
-                }
-
-                console.log("Navigating to:", `${targetPage}?id=${adminId}`);
-                window.location.href = `${targetPage}?id=${adminId}`;
-            });
+            console.log("Navigating to:", targetPage);
+            window.location.href = targetPage;
         });
-    }
+    });
 
-    const complaintButton = document.querySelector('.card.complaint .action-btn');
-    if (complaintButton) {
-        complaintButton.addEventListener('click', function () {
-            console.log("Complaint button clicked directly");
-            window.location.href = adminId ? `complaints.html?id=${adminId}` : 'complaints.html';
-        });
-    }
-
-    const attendanceButton = document.querySelector('.card.attendance .action-btn');
-    if (attendanceButton) {
-        attendanceButton.addEventListener('click', function () {
-            console.log("Attendance button clicked directly");
-            window.location.href = adminId ? `Attendance.html?id=${adminId}` : 'Attendance.html';
-        });
-    }
-
-    const roomButton = document.querySelector('.card.allocation .action-btn');
-    if (roomButton) {
-        roomButton.addEventListener('click', function () {
-            console.log("Room allocation button clicked directly");
-            window.location.href = adminId ? `room.html?id=${adminId}` : 'room.html';
-        });
-    }
+    // REMOVE these individual button handlers as they're redundant and causing conflicts
+    // The general actionButtons handler above already takes care of these buttons
 });
