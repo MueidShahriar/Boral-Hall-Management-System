@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         targetPage = 'requests.html';
                         break;
                     case 'attendance':
-                        targetPage = 'attendance.html';
+                        targetPage = 'Attendance.html';
                         break;
                     case 'allocation':
                         targetPage = 'room.html';
@@ -103,6 +103,14 @@ document.addEventListener("DOMContentLoaded", () => {
         complaintButton.addEventListener('click', function () {
             console.log("Complaint button clicked directly");
             window.location.href = adminId ? `complaints.html?id=${adminId}` : 'complaints.html';
+        });
+    }
+
+    const attendanceButton = document.querySelector('.card.attendance .action-btn');
+    if (attendanceButton) {
+        attendanceButton.addEventListener('click', function () {
+            console.log("Attendance button clicked directly");
+            window.location.href = adminId ? `Attendance.html?id=${adminId}` : 'Attendance.html';
         });
     }
 
