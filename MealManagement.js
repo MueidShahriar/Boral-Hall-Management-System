@@ -6,22 +6,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const submitBtn = document.getElementById("submitMeals");
   const totalCostDisplay = document.getElementById("totalCost");
 
-  // Get student ID from URL parameters
   const urlParams = new URLSearchParams(window.location.search);
   const studentId = urlParams.get('id');
 
   let currentMonth = new Date();
   let mealsOn = {};
   let today = new Date();
-  today.setHours(0, 0, 0, 0); // Set to beginning of day for proper comparison
+  today.setHours(0, 0, 0, 0);
 
   console.log("Initializing calendar...");
   console.log("Current month:", currentMonth);
   
-  // Initialize Firestore
-  const db = firebase.firestore();
 
-  // Function to load existing meal data from Firestore
+  const db = firebase.firestore();
   async function loadMealData() {
     if (!studentId) {
       console.error("No student ID found in URL");
@@ -42,22 +39,17 @@ document.addEventListener("DOMContentLoaded", () => {
         const mealData = mealDoc.data();
         console.log("Received meal data:", mealData);
         
-        // Load saved meal data
+       
         for (const date in mealData) {
-          // Only process properties that are actual dates (not metadata like lastUpdated)
           if (date.match(/^\d{4}-\d{2}-\d{2}$/) && date >= monthStart && date <= monthEnd) {
-            // Make sure we have valid data structure
             if (mealData[date] && typeof mealData[date].on === 'boolean') {
               console.log(`Setting ${date} to ${mealData[date].on}`);
-              // Store meal status for this date
               mealsOn[date] = mealData[date].on;
             }
           }
         }
         
         console.log("Updated mealsOn:", {...mealsOn});
-        
-        // Update the calendar with loaded data - critical step!
         const checkboxes = document.querySelectorAll('.meal-toggle');
         checkboxes.forEach(checkbox => {
           const dateId = checkbox.id.replace('meal-toggle-', '');
@@ -65,8 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
             checkbox.checked = mealsOn[dateId];
           }
         });
-        
-        // Update the total cost display
+        console.log("Checkbox states updated based on meal data.");
         updateTotalCost();
       } else {
         console.log("No meal document found for student ID:", studentId);
@@ -78,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function isPastDate(dateStr) {
     const date = new Date(dateStr);
-    date.setHours(0, 0, 0, 0); // Set to beginning of day for proper comparison
+    date.setHours(0, 0, 0, 0); 
     return date < today;
   }
 
@@ -109,7 +100,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   
   function renderCalendarDays() {
-    // Clear existing days (but keep day labels and empty slots)
     const dayElements = calendar.querySelectorAll('.day');
     dayElements.forEach(el => el.remove());
     
@@ -126,12 +116,10 @@ document.addEventListener("DOMContentLoaded", () => {
         dayElement.classList.add("past-date");
       }
 
-      // First check if we have saved data for this date
       let mealStatus;
       if (mealsOn[dateKey] !== undefined) {
         mealStatus = mealsOn[dateKey];
       } else {
-        // No saved data, use default: ON for future days, OFF for past days
         mealStatus = !isPast;
         mealsOn[dateKey] = mealStatus;
       }
@@ -148,7 +136,6 @@ document.addEventListener("DOMContentLoaded", () => {
           mealsOn[dateKey] = checkbox.checked;
           updateTotalCost();
         } else {
-          // Prevent changing past date and reset the checkbox
           checkbox.checked = mealsOn[dateKey];
           alert("You cannot change meal status for past dates.");
         }
@@ -168,8 +155,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const month = String(currentMonth.getMonth() + 1).padStart(2, "0");
 
     console.log("Calculating total cost for", year, month);
-    
-    // Reset all checkboxes to match the mealsOn object
     const checkboxes = document.querySelectorAll('.meal-toggle');
     checkboxes.forEach(checkbox => {
       const dateId = checkbox.id.replace('meal-toggle-', '');
@@ -177,8 +162,6 @@ document.addEventListener("DOMContentLoaded", () => {
         checkbox.checked = mealsOn[dateId];
       }
     });
-    
-    // Count all meals that are ON for the current month
     for (const date in mealsOn) {
       if (date.startsWith(`${year}-${month}`)) {
         console.log(`Date ${date}: meal status = ${mealsOn[date]}`);
@@ -190,8 +173,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     console.log(`Total meals: ${totalMeals}, Total cost: ৳${totalCost}`);
-    
-    // Update the display with the new total
     totalCostDisplay.textContent = `৳${totalCost}`;
   }
 
@@ -199,8 +180,6 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("Refreshing calendar for:", 
       currentMonth.toLocaleString('default', { month: 'long' }), 
       currentMonth.getFullYear());
-    
-    // Clear data for the current month to avoid stale data
     const year = currentMonth.getFullYear();
     const month = String(currentMonth.getMonth() + 1).padStart(2, "0");
     
@@ -210,10 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
     
-    // Generate calendar structure
     generateCalendar(currentMonth);
-    
-    // Load data from firestore
     loadMealData();
   }
 
@@ -235,51 +211,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const mealDocRef = db.collection('meals').doc(studentId);
-      
-      // Get existing data first
       const doc = await mealDocRef.get();
       let existingData = {};
       if (doc.exists) {
         existingData = doc.data();
       }
-
-      // Convert simple mealsOn object to proper structure
       const mealData = {};
       for (const date in mealsOn) {
-        // Skip any undefined values to prevent Firestore errors
         if (mealsOn[date] === undefined) continue;
-        
-        // Only allow future dates to be updated
+
         if (!isPastDate(date)) {
           mealData[date] = {
-            on: Boolean(mealsOn[date]), // Ensure it's a boolean
+            on: Boolean(mealsOn[date]), 
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
           };
-        } else if (existingData[date] && typeof existingData[date].on === 'boolean') {
-          // Preserve existing data for past dates if it has valid structure
+        } else if (existingData[date] && typeof existingData[date].on === 'boolean') {         
           mealData[date] = existingData[date];
         } else {
-          // Create a valid structure for past dates without valid existing data
           mealData[date] = {
             on: Boolean(mealsOn[date]), // Ensure it's a boolean
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
           };
         }
       }
-      
-      // Create final data object, filtering out any problematic fields
+        
       const updatedData = {
         lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
       };
-      
-      // Add meal data
+
       for (const date in mealData) {
         if (mealData[date] && typeof mealData[date].on === 'boolean') {
           updatedData[date] = mealData[date];
         }
       }
-      
-      // Save to Firestore
+
       await mealDocRef.set(updatedData, { merge: true });
       
       alert("Meal plan submitted successfully!");
@@ -289,19 +254,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Update links with student ID
   if (studentId) {
     const links = document.querySelectorAll('.sidebar a');
     links.forEach(link => {
       if (!link.querySelector('h3')) return;
-      
-      // Skip if it's the logout button
+
       if (link.querySelector('h3').textContent === 'Logout') return;
       
       const href = link.getAttribute('href');
-      // Only update links that point to actual pages (not #)
       if (href && href !== '#') {
-        // Check if the URL already has parameters
         if (href.includes('?')) {
           link.setAttribute('href', `${href}&id=${studentId}`);
         } else {
@@ -317,7 +278,6 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "LoginRegister.html";
   });
 
-  // Mobile sidebar toggle functionality
   const menuBtn = document.getElementById('menu_bar');
   const sidebar = document.querySelector('.aside');
   const closeBtn = document.querySelector('.close span');
@@ -333,7 +293,5 @@ document.addEventListener("DOMContentLoaded", () => {
       sidebar.classList.remove('show');
     });
   }
-  
-  // Initialize the calendar
   refreshCalendar();
 });
