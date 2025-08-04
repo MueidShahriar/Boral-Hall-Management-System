@@ -3,11 +3,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const sidebar = document.querySelector('.aside');
     const closeBtn = document.querySelector('.close span');
 
+    // Authentication check
     if (!sessionStorage.getItem("userId")) {
         window.location.replace("LoginRegister.html");
         return;
     }
 
+    // Logout functionality
     const logout = document.querySelectorAll(".logout-btn");
     logout.forEach(button => {
         button.addEventListener("click", () => {
@@ -17,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // Sidebar toggle functionality
     if (menuBtn) {
         menuBtn.addEventListener('click', () => {
             sidebar.classList.add('show');
@@ -31,6 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.log("Action buttons:", document.querySelectorAll('.action-btn').length);
 
+    // Simplify action button handlers - no ID parameter needed
     const actionButtons = document.querySelectorAll('.action-btn');
     console.log("Found action buttons:", actionButtons.length);
 
@@ -78,4 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
             window.location.href = targetPage;
         });
     });
+
+    // REMOVE these individual button handlers as they're redundant and causing conflicts
+    // The general actionButtons handler above already takes care of these buttons
 });
