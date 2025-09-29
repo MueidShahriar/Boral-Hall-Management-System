@@ -73,6 +73,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 case 'complaint':
                     targetPage = 'complaints.html';
                     break;
+                case 'documents':
+                    targetPage = 'DocumentManagement.html';
+                    break;
                 default:
                     console.error("Unknown card type:", cardType);
                     return;

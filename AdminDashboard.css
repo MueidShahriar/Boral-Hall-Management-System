@@ -257,6 +257,11 @@ main .dashboard {
     border-left: 5px solid blue;
 }
 
+.card.documents {
+    background: #e3eafd;
+    border-left: 5px solid #4f46e5;
+}
+
 .action-btn {
     margin-top: 0.8rem;
     padding: 0.4rem 1rem;

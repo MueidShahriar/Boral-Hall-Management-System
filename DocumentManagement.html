@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document Management | Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link rel="shortcut icon" href="images/BAUET-Logo.png" type="image/x-icon" />
+  <link rel="stylesheet" href="AdminDashboard.css" />
+  <link rel="stylesheet" href="DocumentManagement.css" />
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Sidebar Section -->
+    <aside class="aside">
+      <div class="top">
+        <div class="logo">
+          <img src="images/BAUET-Logo.png" alt="Logo" style="height: 40px; width: 40px;">
+          <h2>BORAL <span class="primary">HALL</span></h2>
+        </div>
+        <div class="close">
+          <span class="material-icons">close</span>
+        </div>
+      </div>
+
+      <div class="sidebar">
+        <a href="AdminDashboard.html">
+          <span class="material-icons">dashboard</span>
+          <h3>Dashboard</h3>
+        </a>
+        <a href="room.html">
+          <span class="material-icons">apartment</span>
+          <h3>Room Allocation</h3>
+        </a>
+        <a href="StudentInformation.html">
+          <span class="material-icons">school</span>
+          <h3>Student Info</h3>
+        </a>
+        <a href="mealreport.html">
+          <span class="material-icons">restaurant</span>
+          <h3>Meal Report</h3>
+        </a>
+        <a href="Attendance.html">
+          <span class="material-icons">person</span>
+          <h3>Attendance</h3>
+        </a>
+        <a href="complaints.html">
+          <span class="material-icons">report_problem</span>
+          <h3>Complaints</h3>
+        </a>
+        <a href="requests.html">
+          <span class="material-icons">notifications</span>
+          <h3>Requests</h3>
+        </a>
+        <a href="DocumentManagement.html" class="active">
+          <span class="material-icons">description</span>
+          <h3>Documents</h3>
+        </a>
+        <a href="#" id="logoutButton" class="logout-btn">
+          <span class="material-icons">logout</span>
+          <h3>Logout</h3>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main>
+      <div class="top-section">
+        <h1>Document Management</h1>
+        <p>Upload and manage documents for students</p>
+      </div>
+
+      <div class="document-management">
+        <!-- Upload Section -->
+        <div class="card upload-section">
+          <span class="material-icons card-icon">upload_file</span>
+          <div class="section-info">
+            <h2>Upload New Document</h2>
+            <form id="uploadForm">
+              <div class="form-group">
+                <label for="docTitle">Document Title</label>
+                <input type="text" id="docTitle" placeholder="Enter document title" required>
+              </div>
+              <div class="form-group">
+                <label for="docCategory">Category</label>
+                <select id="docCategory" required>
+                  <option value="">Select category</option>
+                  <option value="notice">Notice</option>
+                  <option value="academic">Academic</option>
+                  <option value="administrative">Administrative</option>
+                  <option value="events">Events</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="docDescription">Description</label>
+                <textarea id="docDescription" rows="3" placeholder="Brief description of document"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="docVisibility">Visibility</label>
+                <select id="docVisibility" required>
+                  <option value="all">All Students</option>
+                  <option value="specific">Specific Students</option>
+                </select>
+              </div>
+              <div class="form-group" id="specificStudentsGroup" style="display: none;">
+                <label for="specificStudents">Student IDs (comma separated)</label>
+                <input type="text" id="specificStudents" placeholder="e.g., 10001, 10002, 10003">
+              </div>
+              <div class="form-group file-input-group">
+                <label for="docFile">Upload File</label>
+                <input type="file" id="docFile" required>
+                <div class="file-name">No file chosen</div>
+              </div>
+              <button type="submit" class="action-btn upload-btn">Upload Document</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Document List Section -->
+        <div class="documents-list-container">
+          <div class="documents-header">
+            <h2>Uploaded Documents</h2>
+            <div class="filter-section">
+              <label for="filterCategory" class="visually-hidden">Filter by Category</label>
+              <select id="filterCategory">
+                <option value="all">All Categories</option>
+                <option value="notice">Notice</option>
+                <option value="academic">Academic</option>
+                <option value="administrative">Administrative</option>
+                <option value="events">Events</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="documents-list" id="documentsList">
+            <!-- Documents will be listed here by JavaScript -->
+            <div class="document-loading">Loading documents...</div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Right Section -->
+    <div class="right">
+      <div class="top">
+        <button id="menu_bar">
+          <span class="material-icons">menu</span>
+        </button>
+        <button class="notification-btn">
+          <span class="material-icons">notifications</span>
+        </button>
+        <button class="logout-btn">
+          <span class="material-icons">logout</span>
+        </button>
+        <div class="profile">
+          <img src="https://i.imgur.com/sbgrnQQ.jpg" alt="" class="profile-photo">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification for upload status -->
+  <div class="upload-notification" id="uploadNotification">
+    <div class="notification-content">
+      <span class="material-icons notification-icon">check_circle</span>
+      <p class="notification-message">Document uploaded successfully!</p>
+    </div>
+  </div>
+
+  <script src="DocumentManagement.js"></script>
+</body>
+
+</html>

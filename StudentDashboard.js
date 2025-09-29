@@ -81,6 +81,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 case 'complaint':
                     targetPage = 'complainbox.html';
                     break;
+                case 'notices':
+                    targetPage = 'Notices.html';
+                    break;
                 default:
                     return; // If no match, do nothing
             }

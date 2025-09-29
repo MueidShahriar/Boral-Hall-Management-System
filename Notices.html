@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notices & Documents | Boral Hall</title>
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link rel="shortcut icon" href="images/BAUET-Logo.png" type="image/x-icon" />
+  
+  <link rel="stylesheet" href="StudentDashboard.css" />
+  <link rel="stylesheet" href="Notices.css" />
+</head>
+
+<body>
+  <div class="container">
+
+    <aside class="aside">
+      <div class="top">
+        <div class="logo">
+          <img src="images/BAUET-Logo.png" alt="Boral Hall Logo" style="width: 2.5rem; height: 2.5rem;" />
+          <h2 class="danger" style="white-space: nowrap;">Boral Hall</h2>
+        </div>
+        <div class="close" title="Close Sidebar">
+          <span class="material-icons">close</span>
+        </div>
+      </div>
+
+      <div class="sidebar">
+        <a href="StudentDashboard.html">
+          <span class="material-icons">dashboard</span>
+          <h3>Dashboard</h3>
+        </a>
+
+        <a href="profile.html">
+          <span class="material-icons">person</span>
+          <h3>Profile</h3>
+        </a>
+
+        <a href="#">
+          <span class="material-icons">payments</span>
+          <h3>Check Payments</h3>
+        </a>
+
+        <a href="GuestRoomBooking.html">
+          <span class="material-icons">hotel</span>
+          <h3>Guest Room Booking</h3>
+        </a>
+
+        <a href="MealManagement.html">
+          <span class="material-icons">restaurant_menu</span>
+          <h3>Meal Management</h3>
+        </a>
+
+        <a href="#" id="attendanceButton">
+          <span class="material-icons">touch_app</span>
+          <h3>Give Attendance</h3>
+        </a>
+
+        <a href="complainbox.html">
+          <span class="material-icons">report</span>
+          <h3>Complaints</h3>
+        </a>
+        
+        <a href="Notices.html" class="active">
+          <span class="material-icons">description</span>
+          <h3>Notices & Documents</h3>
+        </a>
+        
+        <a href="About.html">
+          <span class="material-icons">info</span>
+          <h3>About</h3>
+        </a>
+    
+        <a href="LoginRegister.html" id="logoutButton">
+          <span class="material-icons">logout</span>
+          <h3>Logout</h3>
+        </a>
+        
+        <p class="rsm">2025©️RSM</p>
+      </div>
+    </aside>
+
+    <main>
+      <div class="notices-header">
+        <h1>Notices & Documents</h1>
+        <p>Access important notices and documents shared by the administration</p>
+      </div>
+
+      <div class="notices-container">
+        <!-- Filter Section -->
+        <div class="filter-section">
+          <div class="filter-group">
+            <label for="categoryFilter">Filter by Category:</label>
+            <select id="categoryFilter">
+              <option value="all">All Categories</option>
+              <option value="notice">Notices</option>
+              <option value="academic">Academic</option>
+              <option value="administrative">Administrative</option>
+              <option value="events">Events</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="search-group">
+            <input type="text" id="searchDocuments" placeholder="Search documents...">
+            <span class="material-icons search-icon">search</span>
+          </div>
+        </div>
+
+        <!-- Documents Section -->
+        <div class="documents-section">
+          <!-- Loading indicator -->
+          <div class="loading-container" id="loadingIndicator">
+            <div class="loading-spinner"></div>
+            <p>Loading documents...</p>
+          </div>
+
+          <!-- Documents list will be populated here by JavaScript -->
+          <div class="documents-list" id="documentsList"></div>
+
+          <!-- No documents message -->
+          <div class="no-documents" id="noDocuments" style="display: none;">
+            <span class="material-icons">info</span>
+            <h3>No Documents Available</h3>
+            <p>There are currently no documents available in this category.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div class="right">
+      <div class="top">
+        <button id="menu_bar" type="button">
+          <span class="material-icons">menu</span>
+        </button>
+
+        <button class="notification-btn" title="Notifications" type="button">
+          <span class="material-icons">notifications</span>
+        </button>
+
+        <a href="LoginRegister.html">
+          <button class="logout-btn" id="logoutButton" title="Logout" type="button">
+            <span class="material-icons">logout</span>
+          </button>
+        </a>
+
+        <div class="profile">
+          <div class="profile-photo" title="Profile">
+            <span class="material-icons">account_circle</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Document Viewer Modal -->
+  <div class="modal" id="documentModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Document Title</h2>
+        <span class="close-modal material-icons">close</span>
+      </div>
+      <div class="modal-body">
+        <div class="document-details">
+          <p><strong>Category:</strong> <span id="modalCategory">Category</span></p>
+          <p><strong>Uploaded:</strong> <span id="modalDate">Date</span></p>
+          <p id="modalDescription">Document description will appear here.</p>
+        </div>
+        <div class="document-actions">
+          <a href="#" id="viewDocumentBtn" target="_blank" class="view-btn">
+            <span class="material-icons">visibility</span>
+            View Document
+          </a>
+          <a href="#" id="downloadDocumentBtn" download class="download-btn">
+            <span class="material-icons">file_download</span>
+            Download
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase scripts -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+  
+  <!-- Initialize Firebase -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBF-nMMW5lG44JfHxx4HxCbf5N81geOiRs",
+      authDomain: "bauet-hms-63f5b.firebaseapp.com",
+      databaseURL: "https://bauet-hms-63f5b-default-rtdb.firebaseio.com",
+      projectId: "bauet-hms-63f5b",
+      storageBucket: "bauet-hms-63f5b.appspot.com",
+      messagingSenderId: "200038506273",
+      appId: "1:200038506273:web:2e141fc9ec36de049ae860"
+    };
+    
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
+  <script src="Notices.js"></script>
+</body>
+</html>

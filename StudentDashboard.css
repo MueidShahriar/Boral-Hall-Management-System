@@ -238,6 +238,11 @@ main .dashboard {
     border-left: 5px solid var(--clr-warning);
 }
 
+.card.notices {
+    background: #e0f2f1;
+    border-left: 5px solid #00897b;
+}
+
 .action-btn,
 .sos-btn {
     margin-top: 0.8rem;
